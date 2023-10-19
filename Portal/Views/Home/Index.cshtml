@@ -1,0 +1,90 @@
+﻿@using Portal.ExtensionMethods;
+@{
+    ViewData["Title"] = "Home";
+    var role = this.User.GetRole();
+}
+
+
+<header class="dgreen-bg-color py-5">
+    <div class="container px-10">
+        <div class="row gx-5 align-items-center justify-content-center">
+            <div class="col-lg-8 col-xl-7 col-xxl-6">
+                <div class="my-5 text-center text-xl-start">
+                    <h1 class="display-5 fw-bolder text-white mb-2">Avans Too Good To Go</h1>
+                    <p class="lead fw-normal text-white-50 mb-4">Join us in the fight against food waste by reserving your favorite packages, lovingly prepared from rescued ingredients right here in our school's canteens.</p>
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+                        @if (User.Identity!.IsAuthenticated)
+                        {
+                            <a class="btn btn-dark-color btn-lg px-4 me-sm-3 text-white" asp-area="" asp-controller="Package" asp-action="AvailablePackages">Get Started</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-dark-color btn-lg px-4 me-sm-3 text-white" asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="/Package/AvailablePackages">Get Started</a>
+                        }
+                        <a class="btn btn-outline-light btn-lg px-4" href="#about-section" onclick="smoothScrollTo('about-section')">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="https://d39l2hkdp2esp1.cloudfront.net/img/photo/247668/247668_00_2x.jpg" alt="..." /></div>
+        </div>
+    </div>
+</header>
+
+@* <header class="dgreen-bg-color py-5">
+    <div class="container px-10">
+        <div class="row gx-5 align-items-center justify-content-center">
+            <div class="col-lg-8 col-xl-7 col-xxl-6">
+                <div class="my-5 text-center text-xl-start">
+                    <h1 class="display-5 fw-bolder mb-2">Avans Too Good To Go</h1>
+                    <p class="lead fw-normal mb-4">Join us in the fight against food waste by reserving your favorite packages, lovingly prepared from rescued ingredients right here in our school's canteens.</p>
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+                        <a class="btn btn-primary btn-lg px-4 me-sm-3" asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="/Package/AvailablePackages">Get Started</a>
+                        <a class="btn btn-primary btn-lg px-4" href="#about-section" onclick="smoothScrollTo('about-section')">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="https://d39l2hkdp2esp1.cloudfront.net/img/photo/247668/247668_00_2x.jpg" alt="..." /></div>
+        </div>
+    </div>
+</header> *@
+
+<section id="about-section" class="py-5">
+    <div class="container px-5 my-5">
+        <div class="row gx-5 align-items-center">
+            <div class="col-lg-6">
+                <img class="img-fluid rounded mb-5 mb-lg-0" src="https://punt.avans.nl/app/uploads/2022/09/Eurest.jpg" alt="..." />
+            </div>
+            <div class="col-lg-6">
+                <h2 class="fw-bolder">Our Commitment to Sustainability</h2>
+                <p class="lead fw-normal text-muted mb-0">
+                    Avans University places a high emphasis on sustainability.
+                    To combat food waste, we are launching an alternative to "Too Good To Go" specifically for Avans students.
+                    Our various campus cafeterias in Breda, Tilburg, and Den Bosch will create daily packages of discounted products that students can reserve.
+                    By reducing food waste in our campus cafeterias, we are not only conserving valuable resources but also providing students with affordable package options.
+                    This innovative system, developed in collaboration with our Informatics program, is set to revolutionize the way we approach food sustainability at Avans.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="py-5 bg-light">
+    <div class="container px-5 my-5">
+        <div class="row gx-5 align-items-center">
+            <div class="col-lg-6 order-first order-lg-last">
+                <img class="img-fluid rounded mb-5 mb-lg-0" src="https://www.avans.nl/img/Logo-International-Grey.svg?v=4.4.0-021023-1837" alt="..." />
+            </div>
+            <div class="col-lg-6">
+                <h2 class="fw-bolder">About Avans</h2>
+                <p class="lead fw-normal text-muted mb-0">
+                    Avans is a leading institution dedicated to providing quality education and fostering innovation.
+                    With a strong commitment to excellence, Avans offers a wide range of programs that empower students to pursue their passions and reach their full potential.
+                    Our vibrant campus communities in Breda, Tilburg, and Den Bosch provide an enriching environment for learning and personal growth.
+                    Join us on a journey of discovery and academic achievement at Avans.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+

@@ -1,0 +1,205 @@
+﻿@using Portal.ExtensionMethods;
+
+@{
+
+    var role = this.User.GetRole();
+}
+
+<DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - TooGoodToGo</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/UI.styles.css" asp-append-version="true" />
+
+        <style>
+            body {
+            }
+
+            .container-fluid {
+                padding: 0;
+            }
+
+            .main-content {
+            }
+
+            .navbar-nav .nav-link {
+                font-size: 20px;
+                margin-left: 20px;
+            }
+
+
+            .link {
+                color: #6C9647;
+            }
+
+            .link:hover {
+                color: #2E5140;
+            }
+
+            .text-green {
+                color: #2E5140;
+            }
+
+            .dgreen-bg-color {
+                background-color: #2E5140;
+            }
+
+
+            .btn-green-color {
+                background-color: #2E5140;
+            }
+
+            .btn-green-color:hover {
+                background-color: #173121;
+            }
+
+            .btn-dark-color {
+                background-color: #173121;
+            }
+
+            .btn-dark-color:hover {
+                background-color: #0e1c15;
+            }
+
+
+            .custom-checkbox input[type=checkbox] {
+                accent-color: #2E5140;
+            }
+
+            .package-image {
+                max-width: 100%;
+                max-height: 100%;
+                height: 250px;
+                object-fit: cover;
+            }
+
+            .footer {
+                /*position: absolute;
+                bottom: 0;
+                width: 100%;
+                white-space: nowrap;
+                line-height: 60px;*/
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                background-color: #2E5140;
+                color: #fff;
+                padding: 10px 0; 
+            }
+
+        </style>
+
+    </head>
+    <body>
+
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light dgreen-bg-color">
+                <div class="container-fluid px-3">
+                    <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="~/img/TGLogo.png" alt="Logo" width="80" height="60">
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse ml-auto d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
+
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item ml-auto">
+                                <a class="nav-link text-white" href="/#about-section" onclick="smoothScrollTo('about-section')">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Package" asp-action="AvailablePackages">Available Packages</a>
+                            </li>
+
+                            @if (role == "Student")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Package" asp-action="MyReservations">My Reservations</a>
+                                </li>
+                            }
+
+                            @if (role == "Employee")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Package" asp-action="MyCanteen">My Canteen</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Package" asp-action="CreatePackage">Create Package</a>
+                                </li>
+                            }
+                        </ul>
+
+                        <ul class="navbar-nav ml-auto">
+
+                            @if (User.Identity!.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="/Home/Index">Login</a>
+                                </li>
+                            }
+                        </ul>
+
+
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+
+
+        <div class="container-fluid">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+
+        <footer class="footer text-muted dgreen-bg-color py-4 mt-auto">
+            <div class="container px-5">
+                <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                    <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Avans TooGoodToGo 2023</div></div>
+                    <div class="col-auto">
+                        <a class="text-white link-light small" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <span class="text-white mx-1">&middot;</span>
+                        <a class="text-white link-light small" href="https://www.avans.nl/over-avans">About Avans</a>
+                        <span class="text-white mx-1">&middot;</span>
+                        <a class="text-white link-light small" href="https://www.avans.nl/over-avans/contact-en-locaties">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+
+
+        <script>
+            function smoothScrollTo(targetId) {
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        </script>
+
+        @await RenderSectionAsync("Scripts", required: false)
+    </body>
+</html>

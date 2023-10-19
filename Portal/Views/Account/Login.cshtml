@@ -1,0 +1,31 @@
+﻿@model LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container p-3">
+
+    <h3 class="dgreen-bg-color text-white text-center p-2">@ViewData["Title"]</h3>
+
+    <form asp-action="Login" asp-controller="Account" method="post">
+        <input type="hidden" asp-for="ReturnUrl" value="@Model.ReturnUrl" />
+        <div class="form-group mb-2">
+            <label asp-for="UserId">Student/employee ID</label>
+            <div><span asp-validation-for="UserId" class="text-danger"></span></div>
+            <input asp-for="UserId" class="form-control" />
+        </div>
+        <div class="form-group mb-2">
+            <label asp-for="Password">Password</label>
+            <div><span asp-validation-for="Password" class="text-danger"></span></div>
+            <input type="password" asp-for="Password" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-green-color px-4 me-sm-3 text-white">Login</button>
+    </form>
+
+
+    <p>Don't have an account? 
+        <a class="link" asp-action="StudentRegister" asp-asp-controller="Account"> Register as student</a> or
+        <a class="link" asp-action="EmployeeRegister" asp-controller="Account">register as employee</a>
+    </p>
+
+</div>

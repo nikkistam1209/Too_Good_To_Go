@@ -1,0 +1,157 @@
+﻿@using Core.Domain.Entities;
+@using Core.Domain.Enumerations;
+@using Portal.ExtensionMethods;
+@using Core.Domain;
+
+@* @model IEnumerable<Package> *@
+
+@model AllPackagesModel
+
+@{
+    ViewData["Title"] = "Available Packages";
+    var role = this.User.GetRole();
+}
+
+<div class="container p-3 mb-3">
+    <h3 class="dgreen-bg-color text-white text-center p-2">@ViewData["Title"]</h3>
+
+    @if (Model.Packages.Count() > 0)
+    {
+        @* @if (role == "Employee")
+        {
+            <div class="btn-toolbar my-3" style="justify-content: center; display: flex">
+                <div class="btn-group">                  
+                    <button type="button" class="btn btn-green-color text-white" asp-action="MyPackages" asp-controller="Package" asp-route-selectedOption="my">My Canteen</button>
+                    <button type="button" class="btn btn-green-color text-white" asp-action="MyPackages" asp-controller="Package" asp-route-selectedOption="other">Other Canteens</button>
+                    <button type="button" class="btn btn-green-color text-white" asp-action="MyPackages" asp-controller="Package" asp-route-selectedOption="all">All Canteens</button>
+                </div>
+            </div>
+        } *@
+
+        <!-- error here -->
+        @if (!string.IsNullOrEmpty(Model.ReservePackageError))
+        {
+            <div class="alert alert-danger">
+                @Model.ReservePackageError
+            </div>
+        }
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+            @foreach (Package p in Model.Packages)
+            @* @foreach (Package p in Model.Packages.Where(p => p.Canteen == Model.MyCanteen)) *@
+            {
+                <div class="col mb-5">
+                    <div class="card shadow h-100">
+                        <!-- Package image -->
+                        @if (p.Type == PackageEnum.Snack)
+                        {
+                            <img class="card-img-top package-image" src="https://www.snackweetjes.nl/wp-content/uploads/2016/03/frituur-snacks.png" alt="Package Image Snacks" />
+                        }
+                        @if (p.Type == PackageEnum.Beverage)
+                        {
+                            <img class="card-img-top package-image" src="https://i.pinimg.com/564x/79/6c/34/796c34906c9111f02f41a319298a261b.jpg" alt="Package Image Beverages" />
+                        }
+                        @if (p.Type == PackageEnum.Lunch)
+                        {
+                            <img class="card-img-top package-image" src="https://hips.hearstapps.com/hmg-prod/images/sandwich-ideas-646b8fd98d9cd.jpeg" alt="Package Image Lunch" />
+                        }
+                        @if (p.Type == PackageEnum.Dinner)
+                        {
+                            <img class="card-img-top package-image" src="https://myplate-prod.azureedge.us/sites/default/files/styles/recipe_525_x_350_/public/2020-11/SkilletPastaDinner_527x323.jpg?itok=Yb4EDdkm" alt="Package Image Dinner" />
+                        }
+
+                        <div class="card-body">
+                            <!-- Type of Package -->
+                            <div class="badge dgreen-bg-color bg-gradient rounded-pill mb-2">@p.Type</div>
+                            <!-- Package Name -->
+                            <h5 class="card-title">@p.Name</h5>
+
+                            <!-- Package Info -->
+                            <p class="card-text">Pick up date: @p.PickUp.ToString("dd-MM-yyyy")</p>
+                            <p class="card-text">Pick up time: @p.PickUp.ToString("HH:mm")</p>
+                            <p class="card-text">Pick up closing time: @p.ClosingTime.ToString("HH:mm")</p>
+                            <p class="card-text">Price: @p.Price</p>
+                            <p class="card-text">Canteen: @p.Canteen</p>
+                            <p class="card-text">Age restriction: @p.AgeRestriction</p>
+                            @if (role == "Employee")
+                            {
+                                @if (@p.StudentReservation != null)
+                                {
+                                    <p>Reservation: @p.StudentReservation.FirstName</p>
+                                }
+
+                            }
+
+
+                            <!-- List of Products -->
+                            <p class="card-text">Products:</p>
+                            <ul>
+                                @foreach (Product product in p.Products)
+                                {
+                                    <li>@product.Name</li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div class="card-footer bg-transparent border-top-0">
+                            <!-- "Package Details" link -->
+                            <a class="btn btn-green-color text-white" asp-action="PackageDetails" asp-controller="Package" asp-route-id="@p.Id">View Details</a>
+
+                            <!-- Button for Reserving -->
+                            @if (role == "Student")
+                            {
+                                <button class="btn btn-green-color px-4 me-sm-3 text-white" type="button" data-bs-toggle="modal" data-bs-target="#ReservePackageModal-@p.Id">Reserve Package</button>
+
+                                <!-- _ReservePackageModal here -->
+                                <div class="modal fade" id="ReservePackageModal-@p.Id" aria-hidden="true" aria-labelledby="ReservePackageModal-@p.Id" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="ReservePackageModal-@p.Id">Reserve Package</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                Are you sure you would like to reserve this @p.Type @p.Name?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form method="get" asp-action="ReservePackage" asp-controller="Package" asp-route-id="@p.Id">
+                                                    <button class="btn btn-green-color text-white" type="submit">Reserve</button>
+                                                </form>
+                                                <button type="button" class="btn btn-green-color text-white" data-bs-dismiss="modal">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                                   
+                        }
+
+                            <!-- Buttons for Editing and Deleting-->
+                            @if (role == "Employee" && p.Canteen == Model.MyCanteen)
+                            {
+                                <a class="btn btn-green-color text-white" asp-action="EditPackage" asp-controller="Package" asp-route-id="@p.Id">Edit Package</a>
+                                
+                                <button class="btn btn-green-color text-white">Delete Package</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        @if (role == "Student")
+        {
+            <p class="text-center">There are currently no available packages. Please return at a later time!</p>
+        }
+        @if(role == "Employee")
+        {
+            <p class="text-center">There are currently no available packages. Change that by <a class="link" asp-action="CreatePackage" asp-controller="Package">creating a package</a>!</p>
+        }
+    }
+</div>
+
+
+

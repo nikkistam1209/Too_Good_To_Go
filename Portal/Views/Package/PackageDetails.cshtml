@@ -1,0 +1,57 @@
+﻿@using Core.Domain.Entities;
+@using Portal.ExtensionMethods;
+@model PackageDetailModel
+
+@{
+    ViewData["Title"] = "Package Details";
+    var role = this.User.GetRole();
+}
+
+<div class="container p-3 mb-3">
+    <h3 class="dgreen-bg-color text-white text-center p-2">@ViewData["Title"]</h3>
+
+    <div class="row">
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="--detail-package-info">
+                <h1>@Model.Name</h1>
+                <p>Price: @Model.Price</p>
+                <p>Canteen: @Model.Canteen</p>
+                <p>City: @Model.Canteen</p> <!--how do i display the canteen city here-->
+                <p>Pickup date: @Model.PickUpDate</p>
+                <p>Pickup time: @Model.PickUpTime</p>
+                <p>Pickup closing time: @Model.ClosingTime</p>
+                <p>Type of package: @Model.Type</p>
+                <p>Age restriction: @Model.AgeRestriction</p>
+                <p>Reservation: @Model.StudentReservation</p>
+               
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="">
+                <h2 class=""> Possible contents:</h2>
+                <ul>
+                    @foreach (Product p in Model.SelectedProducts)
+                    {
+                        <li>
+                            @p.Name @if (p.ContainsAlcohol)
+                            {
+                                <text>(contains alcohol)</text>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        @* <div class="col-sm-12 col-md-6 col-lg-4">
+            <img class="package-image" src="@String.Format("data:image/png;base64,{0}", Convert.ToBase64String(Model.SelectedProducts.ElementAt( new Random().Next( Model.SelectedProducts.Count())).Picture!))" alt="@Model.SelectedProducts.First().Name" />
+        </div> *@
+
+    </div>
+
+    <p class="mt-4 text-center">Disclaimer: The products that are shown are only an indication and may not all be included in the package.</p>
+
+
+</div>

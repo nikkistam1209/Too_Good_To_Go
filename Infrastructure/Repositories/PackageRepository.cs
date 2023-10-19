@@ -1,0 +1,88 @@
+﻿using Core.Domain.Entities;
+using Core.Domain.Enumerations;
+using Core.DomainServices.IRepositories;
+using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Infrastructure.Repositories
+{
+    public class PackageRepository : IPackageRepository
+    {
+        private readonly ApplicationDbContext _context;
+
+        public PackageRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public IEnumerable<Package> GetAvailablePackages()
+        {
+            return _context.Packages
+                .Include(p => p.Products)
+                .Where(p => p.StudentReservation == null)
+                /*.Include(p => p.Canteen) */
+                /*.Include(p => p.StudentReservation) */
+                .ToList();
+        }
+
+        public IEnumerable<Package> GetAllPackages()
+        {
+            return _context.Packages
+                .Include(p => p.Products)
+                /*.Include(p => p.Canteen) */
+                .Include(p => p.StudentReservation)
+                .ToList();
+        }
+
+        public IEnumerable<Package> GetMyCanteenPackages(CanteenEnum c)
+        {
+            return _context.Packages
+                .Include(p => p.Products)
+                .Where(package => package.Canteen == c)
+                .ToList();
+        }
+
+        public IEnumerable<Package> GetOtherCanteenPackages(CanteenEnum c)
+        {
+            return _context.Packages
+                .Include(p => p.Products)
+                .Where(package => package.Canteen != c)
+                .ToList();
+        }
+
+        public Package GetPackageById(int id)
+        {
+            return _context.Packages
+                .Include(p => p.Products)
+                /*.Include(p => p.Canteen)
+                .Include(p => p.StudentReservation)*/
+                .First(s => s.Id == id);
+        }
+
+
+        public async Task AddPackage(Package newPackage)
+        {
+            _context.Packages.Add(newPackage);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdatePackage(Package package)
+        {
+            _context.Update(package);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeletePackage(Package package)
+        {
+            _context.Remove(package);
+            await _context.SaveChangesAsync();
+        }
+
+
+    }
+}
