@@ -9,63 +9,134 @@
 
     <h3 class="dgreen-bg-color text-white text-center p-2">@ViewData["Title"]</h3>
 
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
 
     <form asp-action="CreatePackage" asp-controller="Package" method="post">
-        <div class="form-group mb-2">
+
+        <div class="form-group mb-2 mt-3">
+            @if (ViewData.ModelState.TryGetValue("Name", out var nameEntry) && nameEntry.Errors.Count > 0)
+            {
+                <div class="alert alert-danger mb-1 mt-3">
+                    @nameEntry.Errors[0].ErrorMessage
+                </div>
+            }
             <label asp-for="Name"></label>
-            <div><span asp-validation-for="Name" class="text-danger"></span></div>
-            <input asp-for="Name" class="form-control" />
+            <div class="mb-4">
+                <input asp-for="Name" class="form-control" />
+            </div>
         </div>
 
+
         <div class="form-group mb-2">
+            @if (ViewData.ModelState.TryGetValue("SelectedProductIds", out var selectedProductIdsEntry) && selectedProductIdsEntry.Errors.Count > 0)
+            {
+                <div class="alert alert-danger mb-1 mt-3">
+                    @selectedProductIdsEntry.Errors[0].ErrorMessage
+                </div>
+            }
             <label asp-for="SelectedProductIds">Select Indication of Products</label>
-            <div>
+            <div class="mt-2 mb-3">
                 @foreach (var item in Model.AvailableProducts)
                 {
-                    <div class="checkbox custom-control custom-checkbox">
-                        <label class="custom-control-label">
-                            <input type="checkbox" name="SelectedProductIds" value="@item.Value" />
-                            @item.Text
-                        </label>
-                    </div>
+                    int productValue;
+                    if (int.TryParse(item.Value, out productValue))
+                    {
+                        List<int> selectedProductIds = Model.SelectedProductIds;
+
+                        <div class="checkbox custom-control custom-checkbox ">
+                            <label class="custom-control-label">
+                                <input type="checkbox" name="SelectedProductIds" value="@item.Value"
+                                @(selectedProductIds.Contains(productValue) ? "checked" : "") /> @item.Text
+                            </label>
+                        </div>
+                    }
                 }
             </div>
         </div>
 
         <div class="form-group mb-2">
+            @if (ViewData.ModelState.TryGetValue("PickUpDate", out var pickUpDateEntry) && pickUpDateEntry.Errors.Count > 0)
+            {
+                <div class="alert alert-danger mb-1 mt-3">
+                    @pickUpDateEntry.Errors[0].ErrorMessage
+                </div>
+            }
             <label asp-for="PickUpDate">Pick Up Date</label>
-            <div><span asp-validation-for="PickUpDate" class="text-danger"></span></div>
-            <input type="date" asp-for="PickUpDate" class="form-control"/>
+            <div class="mb-3">
+                <input type="date" asp-for="PickUpDate" class="form-control" />
+            </div>
         </div>
+
         <div class="row">
             <div class="form-group mb-2 col">
+                @if (ViewData.ModelState.TryGetValue("PickUpTime", out var pickUpTimeEntry) && pickUpTimeEntry.Errors.Count > 0)
+                {
+                    <div class="alert alert-danger mb-1 mt-3">
+                        @pickUpTimeEntry.Errors[0].ErrorMessage
+                    </div>
+                }
                 <label asp-for="PickUpTime">Pick Up From</label>
-                <div><span asp-validation-for="PickUpTime" class="text-danger"></span></div>
-                <input type="time" step="60" asp-for="PickUpTime" class="form-control"/>
+                <div class="mb-3">
+                    <input type="time" step="60" asp-for="PickUpTime" class="form-control" />
+                </div>
             </div>
 
-            <div class="form-group mb-2 col">  
+            <div class="form-group mb-2 col">
+                @if (ViewData.ModelState.TryGetValue("ClosingTime", out var closingTimeEntry) && closingTimeEntry.Errors.Count > 0)
+                {
+                    <div class="alert alert-danger mb-1 mt-3">
+                        @closingTimeEntry.Errors[0].ErrorMessage
+                    </div>
+                }
                 <label asp-for="ClosingTime">Pick Up Until</label>
-                <div><span asp-validation-for="ClosingTime" class="text-danger"></span></div>
-                <input type="time" step="60" asp-for="ClosingTime" class="form-control"/>
+                <div class="mb-3">
+                    <input type="time" step="60" asp-for="ClosingTime" class="form-control" />
+                </div>
             </div>
         </div>
 
         <div class="form-group mb-2">
+            @if (ViewData.ModelState.TryGetValue("Price", out var priceEntry) && priceEntry.Errors.Count > 0)
+            {
+                <div class="alert alert-danger mb-1 mt-2">
+                    @priceEntry.Errors[0].ErrorMessage
+                </div>
+            }
             <label asp-for="Price"></label>
-            <div><span asp-validation-for="Price" class="text-danger"></span></div>
-            <input asp-for="Price" class="form-control" />
+            <div class="mb-4">
+                <input asp-for="Price" class="form-control" />
+            </div>
         </div>
 
-        <div class="form-group mb-2">
+        <div class="form-group mb-">
+            @if (ViewData.ModelState.TryGetValue("Type", out var typeEntry) && typeEntry.Errors.Count > 0)
+            {
+                <div class="alert alert-danger mb-1 mt-3">
+                    @typeEntry.Errors[0].ErrorMessage
+                </div>
+            }
             <label asp-for="Type"></label>
-            <div><span asp-validation-for="Type" class="text-danger"></span></div>
-            <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<PackageEnum>()">
-                <option selected disabled>Selecteer</option>
-            </select>
+            <div>
+                <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<PackageEnum>()">
+                    <option selected disabled>Selecteer</option>
+                </select>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-green-color px-4 me-sm-3 text-white">Create</button>
+
+        <button type="submit" class="btn btn-green-color px-4 me-sm-3 mt-3 text-white">Create</button>
     </form>
 
 

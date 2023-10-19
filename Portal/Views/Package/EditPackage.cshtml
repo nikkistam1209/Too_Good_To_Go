@@ -9,7 +9,6 @@
     <h3 class="dgreen-bg-color text-white text-center p-2">@ViewData["Title"]</h3>
 
     <form asp-action="EditPackage" asp-controller="Package" method="post">
-        <input type="hidden" asp-for="Id" /> <!-- Add this line to include the package ID -->
 
         <div class="form-group mb-2">
             <label asp-for="Name">Package Name</label>
@@ -73,5 +72,6 @@
         </div>
 
         <button type="submit" class="btn btn-green-color px-4 me-sm-3 text-white">Update</button>
+
     </form>
 </div>

@@ -50,6 +50,18 @@ namespace Core.DomainServices.Services
             }
         }
 
+        public async Task DeletePackage(Package package)
+        {
+            try
+            {
+                await _packageRepository.DeletePackage(package);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error updating package: " + ex.Message);
+            }
+        }
+
 
         public Package GetPackageById(int id)
         {
@@ -87,7 +99,7 @@ namespace Core.DomainServices.Services
             }
         }
 
-        public IEnumerable<Package> GetMyCanteenPackages(CanteenEnum c)
+        /*public IEnumerable<Package> GetMyCanteenPackages(CanteenEnum c)
         {
             try
             {
@@ -109,7 +121,7 @@ namespace Core.DomainServices.Services
             {
                 throw new Exception("Error getting Packages: " + ex.Message);
             }
-        }
+        }*/
 
         public async Task ReservePackageAsync(int PackageId, string userId)
         {
@@ -126,9 +138,9 @@ namespace Core.DomainServices.Services
                     {
                         var studentAge = CalculateStudentAge(student.DOB, Package.PickUp);
 
-                        if (studentAge < 18) // Example age for illustration
+                        if (studentAge < 18) 
                         {
-                            throw new Exception("You are not old enough to reserve this Package");
+                            throw new Exception("You are not old enough to reserve this package");
                         }
                     }
 

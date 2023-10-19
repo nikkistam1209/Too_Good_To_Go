@@ -25,8 +25,7 @@ namespace Infrastructure.Repositories
             return _context.Packages
                 .Include(p => p.Products)
                 .Where(p => p.StudentReservation == null)
-                /*.Include(p => p.Canteen) */
-                /*.Include(p => p.StudentReservation) */
+                .OrderBy(p => p.PickUp)
                 .ToList();
         }
 
@@ -34,12 +33,12 @@ namespace Infrastructure.Repositories
         {
             return _context.Packages
                 .Include(p => p.Products)
-                /*.Include(p => p.Canteen) */
                 .Include(p => p.StudentReservation)
+                .OrderBy(p => p.PickUp)
                 .ToList();
         }
 
-        public IEnumerable<Package> GetMyCanteenPackages(CanteenEnum c)
+        /*public IEnumerable<Package> GetMyCanteenPackages(CanteenEnum c)
         {
             return _context.Packages
                 .Include(p => p.Products)
@@ -53,14 +52,13 @@ namespace Infrastructure.Repositories
                 .Include(p => p.Products)
                 .Where(package => package.Canteen != c)
                 .ToList();
-        }
+        }*/
 
         public Package GetPackageById(int id)
         {
             return _context.Packages
                 .Include(p => p.Products)
-                /*.Include(p => p.Canteen)
-                .Include(p => p.StudentReservation)*/
+                .Include(p => p.StudentReservation)              
                 .First(s => s.Id == id);
         }
 

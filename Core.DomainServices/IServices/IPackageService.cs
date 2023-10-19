@@ -8,13 +8,15 @@ namespace Core.DomainServices.IServices
         Package GetPackageById(int id);
 
         Task AddPackage(Package package);
-
         Task UpdatePackage(Package package);
+        Task DeletePackage(Package package);
+
+
         IEnumerable<Package> GetAvailablePackages();
         IEnumerable<Package> GetPackages();
 
-        IEnumerable<Package> GetMyCanteenPackages(CanteenEnum c);
-        IEnumerable<Package> GetOtherCanteenPackages(CanteenEnum c);
+        /*IEnumerable<Package> GetMyCanteenPackages(CanteenEnum c);
+        IEnumerable<Package> GetOtherCanteenPackages(CanteenEnum c);*/
 
         Task ReservePackageAsync(int packageId, string userId);
 

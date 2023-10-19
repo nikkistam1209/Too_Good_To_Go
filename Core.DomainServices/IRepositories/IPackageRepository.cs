@@ -13,8 +13,8 @@ namespace Core.DomainServices.IRepositories
         IEnumerable<Package> GetAvailablePackages();
         IEnumerable<Package> GetAllPackages();
 
-        IEnumerable<Package> GetMyCanteenPackages(CanteenEnum c);
-        IEnumerable<Package> GetOtherCanteenPackages(CanteenEnum c);
+        /*IEnumerable<Package> GetMyCanteenPackages(CanteenEnum c);
+        IEnumerable<Package> GetOtherCanteenPackages(CanteenEnum c);*/
 
 
         Package GetPackageById(int id);

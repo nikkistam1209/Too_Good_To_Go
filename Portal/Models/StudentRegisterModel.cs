@@ -21,7 +21,7 @@ namespace Portal.Models
 
         [Display(Name = "Date of birth")]
         [Required(ErrorMessage = "Fill out your date of birth")]
-        [AgeCheck(16, ErrorMessage = "You have to be at least 16")]
+        [AgeCheck(16)]
         public DateTime DOB { get; set; }
 
         [Display(Name = "E-mailaddress")]

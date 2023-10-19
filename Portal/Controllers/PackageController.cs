@@ -33,10 +33,10 @@ namespace Portal.Controllers
             _studentService = studentService;
         }
 
-        // ------------------------- view packages --------------------------
+        // ------------------------------------------------ view packages ----------------------------------------------------
 
         [Authorize]
-        public IActionResult AvailablePackages(string selectedOption = "all")
+        public IActionResult AvailablePackages()
         {
             IEnumerable<Package> packages;
             CanteenEnum canteen;
@@ -67,8 +67,6 @@ namespace Portal.Controllers
 
             }
 
-            
-
             return View("AvailablePackages", viewModel);
         }
 
@@ -87,88 +85,6 @@ namespace Portal.Controllers
 
             return View("MyCanteen", viewModel);
         }
-
-
-        /*[Authorize]
-        public IActionResult AvailablePackages(string selectedOption = "all")
-        {
-            IEnumerable<Package> packages;
-
-            _logger.LogInformation("-----------" + User.HasClaim(c => c.Type == "Role" && c.Value == "Student"));
-
-            if (User.HasClaim(c => c.Type == "Role" && c.Value == "Student"))
-            {
-                packages = _packageService.GetAvailablePackages();
-            }
-            else
-            {
-                CanteenEnum canteen = _employeeService.GetCanteenById(this.User.Identity?.Name);
-
-                if (selectedOption == "my")
-                {
-                    packages = _packageService.GetMyCanteenPackages(canteen);
-                }
-                else if (selectedOption == "other")
-                {
-                    packages = _packageService.GetOtherCanteenPackages(canteen);
-                }
-                else // if selected option = all
-                {
-                    packages = _packageService.GetPackages();
-                }
-            }
-
-            var viewModel = new AllPackagesModel
-            {
-                Packages = packages
-            };
-
-            return View("AvailablePackages", viewModel);
-        }*/
-
-
-        /*[Authorize]
-        public IActionResult MyPackages(string selectedOption = "all")
-        {
-            IEnumerable<Package> packages;
-
-            _logger.LogInformation("-----------" + User.HasClaim(c => c.Type == "Role" && c.Value == "Student"));
-
-            if (User.HasClaim(c => c.Type == "Role" && c.Value == "Student"))
-            {
-                // filter op kantines in mijn stad
-                packages = _packageService.GetAvailablePackages();
-            }
-            else
-            {
-                CanteenEnum canteen = _employeeService.GetCanteenById(this.User.Identity?.Name);
-
-                if (selectedOption == "my")
-                {
-                    packages = _packageService.GetMyCanteenPackages(canteen);
-                }
-                else if (selectedOption == "other")
-                {
-                    packages = _packageService.GetOtherCanteenPackages(canteen);
-                }
-                else // if selected option = all
-                {
-                    packages = _packageService.GetPackages();
-                }
-            }
-
-            var viewModel = new AllPackagesModel
-            {
-                Packages = packages
-            };
-
-            return View("AvailablePackages", viewModel);
-        }*/
-
-
-
-
-
 
 
 
@@ -202,7 +118,7 @@ namespace Portal.Controllers
             return View(model);
         }
 
-        // ------------------------ reservations -------------------------
+        // ------------------------------------------------------- reservations -----------------------------------------------
 
         [Authorize(Policy = "Student")]
         public IActionResult MyReservations()
@@ -223,7 +139,8 @@ namespace Portal.Controllers
 
             if (package == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Package could not be found";
+                return RedirectToAction("AvailablePackages");
             }
 
             var viewModel = new AllPackagesModel
@@ -234,11 +151,13 @@ namespace Portal.Controllers
             try
             {
                 await _packageService.ReservePackageAsync(id, studentId);
+                TempData["SuccessMessage"] = "Package reserved successfully";
                 return RedirectToAction("MyReservations");
             }
             catch (Exception ex)
             {
-                viewModel.ReservePackageError = ex.Message;
+                TempData["ErrorMessage"] = "Reservation failed: " + ex.Message;
+                viewModel.PackageError = ex.Message;
             }
 
             return View("AvailablePackages", viewModel);
@@ -246,7 +165,7 @@ namespace Portal.Controllers
         }
 
 
-        // ------------------------ creating a package ------------------------
+        // ----------------------------------------------------- creating a package -----------------------------------------------
 
         [Authorize(Policy = "Employee")]
         public IActionResult CreatePackage()
@@ -329,7 +248,7 @@ namespace Portal.Controllers
 
         }
 
-        // ------------------------ updating a package ------------------------
+        // ---------------------------------------------------- updating a package -------------------------------------------------
 
         [Authorize(Policy = "Employee")]
         public IActionResult EditPackage(int id)
@@ -416,6 +335,39 @@ namespace Portal.Controllers
                 return View(packageModel);
             }
         }
+
+        // ---------------------------------------------------- deleting a package -------------------------------------------------
+
+        [Authorize(Policy = "Employee")]
+        public async Task<IActionResult> DeletePackage(int id)
+        {
+            var package = _packageService.GetPackageById(id);
+
+            if (package == null)
+            {
+                return RedirectToAction("AvailablePackages");
+            }
+
+            try
+            {
+                if (package.StudentReservation != null)
+                {
+                    TempData["ErrorMessage"] = "This package has a reservation and cannot be deleted";
+                }
+                else
+                {
+                    await _packageService.DeletePackage(package);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            return RedirectToAction("AvailablePackages");
+        }
+
+
 
 
 

@@ -9,7 +9,7 @@ namespace Portal.Models
 
         public CanteenEnum? MyCanteen { get; set; }
 
-        public string ReservePackageError { get; set; }
+        public string PackageError { get; set; }
 
         public bool oldEnough { get; set; }
     }
