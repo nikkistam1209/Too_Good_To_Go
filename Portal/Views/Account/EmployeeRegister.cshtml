@@ -6,73 +6,80 @@
     ViewData["Title"] = "Employee Registration";
 }
 
-<div class="container p-3 mb-3">
-
-    <h3 class="dgreen-bg-color text-white text-center p-2">@ViewData["Title"]</h3>
-
+<div class="container p-5">
+    <h3 class="dgreen-bg-color text-white text-center p-2 mb-3">@ViewData["Title"]</h3>
 
     <form asp-action="EmployeeRegister" asp-controller="Account" method="post">
-        <div class="form-group mb-2">
+        <div class="form-group">
+            @if (ViewData.ModelState.TryGetValue("FirstName", out var firstNameEntry) && firstNameEntry.Errors.Count > 0)
+            {
+                <div class="alert alert-danger mb-1 mt-2">
+                    @firstNameEntry.Errors[0].ErrorMessage
+                </div>
+            }
             <label asp-for="FirstName"></label>
-            <div><span asp-validation-for="FirstName" class="text-danger"></span></div>
             <input asp-for="FirstName" class="form-control" />
         </div>
-        <div class="form-group mb-2">
+
+        <div class="form-group">
+            @if (ViewData.ModelState.TryGetValue("LastName", out var lastNameEntry) && lastNameEntry.Errors.Count > 0)
+            {
+                <div class="alert alert-danger mb-1 mt-2">
+                    @lastNameEntry.Errors[0].ErrorMessage
+                </div>
+            }
             <label asp-for="LastName"></label>
-            <div><span asp-validation-for="LastName" class="text-danger"></span></div>
             <input asp-for="LastName" class="form-control" />
         </div>
-        <div class="form-group mb-2">
+
+        <div class="form-group">
+            @if (ViewData.ModelState.TryGetValue("EmployeeID", out var employeeIdEntry) && employeeIdEntry.Errors.Count > 0)
+            {
+                <div class="alert alert-danger mb-1 mt-2">
+                    @employeeIdEntry.Errors[0].ErrorMessage
+                </div>
+            }
             <label asp-for="EmployeeID"></label>
-            <div><span asp-validation-for="EmployeeID" class="text-danger"></span></div>
             <input asp-for="EmployeeID" class="form-control" />
         </div>
 
-        @* <div class="form-group mb-2">
+        <div class="form-group">
+            @if (ViewData.ModelState.TryGetValue("WorkPlace", out var workPlaceEntry) && workPlaceEntry.Errors.Count > 0)
+            {
+                <div class="alert alert-danger mb-1 mt-2">
+                    @workPlaceEntry.Errors[0].ErrorMessage
+                </div>
+            }
             <label asp-for="WorkPlace"></label>
-            <div><span asp-validation-for="WorkPlace" class="text-danger"></span></div>
             <select asp-for="WorkPlace" class="form-control" asp-items="Html.GetEnumSelectList<CanteenEnum>()">
-                <option selected disabled>Selecteer</option>
-            </select>
-        </div> *@
-
-        <div class="form-group mb-2">
-            <label asp-for="WorkPlace"></label>
-            <div><span asp-validation-for="WorkPlace" class="text-danger"></span></div>
-            <select asp-for="WorkPlace" class="form-control" asp-items="Html.GetEnumSelectList<CanteenEnum>()">
-                <option selected disabled>Selecteer</option>
+                <option value="">Please select a canteen</option>
             </select>
         </div>
 
-
-        @* <div class="form-group mb-2">
-            <label asp-for="WorkPlace"></label>
-            <div><span asp-validation-for="WorkPlace" class="text-danger"></span></div>
-            <select asp-for="WorkPlace" class="form-control">
-                <option value="">Select</option>
-                @if (Model.CanteenList != null && Model.CanteenList.Any())
-                {
-                    @foreach (var canteen in Model.CanteenList)
-                    {
-                        <option value="@canteen">@canteen.Location</option>
-                    }
-                }
-                else
-                {
-                    <option value="" disabled>No canteens available</option>
-                }
-            </select>
-        </div> *@
-
-
-        <div class="form-group mb-2">
+        <div class="form-group">
+            @if (ViewData.ModelState.TryGetValue("Password", out var passwordEntry) && passwordEntry.Errors.Count > 0)
+            {
+                <div class="alert alert-danger mb-1 mt-2">
+                    @passwordEntry.Errors[0].ErrorMessage
+                </div>
+            }
             <label asp-for="Password"></label>
-            <div><span asp-validation-for="Password" class="text-danger"></span></div>
             <input type="password" asp-for="Password" class="form-control" />
         </div>
+
+        <div class="form-group">
+            @if (ViewData.ModelState.TryGetValue("PasswordReEntry", out var passwordReEntry) && passwordReEntry.Errors.Count > 0)
+            {
+                <div class="alert alert-danger mb-1 mt-2">
+                    @passwordReEntry.Errors[0].ErrorMessage
+                </div>
+            }
+            <label asp-for="PasswordReEntry"></label>
+            <input type="password" asp-for="PasswordReEntry" class="form-control" />
+        </div>
+
         <button type="submit" class="btn btn-green-color px-4 me-sm-3 text-white">Register</button>
     </form>
 
     <p>Already have an account? Click <a class="link" asp-action="Login" asp-controller="Account">here</a> to login</p>
-
 </div>

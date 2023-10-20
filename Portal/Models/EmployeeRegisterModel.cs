@@ -8,25 +8,29 @@ namespace Portal.Models
     {
         [Key]
         [Display(Name = "Employee ID")]
-        [Required(ErrorMessage = "Fill out your employee ID")]
+        [Required(ErrorMessage = "Please enter your employee ID")]
         public string? EmployeeID { get; set; }
 
         [Display(Name = "First name")]
-        [Required(ErrorMessage = "Fill out your first name")]
+        [Required(ErrorMessage = "Please enter your first name")]
         public string? FirstName { get; set; }
 
         [Display(Name = "Last name")]
-        [Required(ErrorMessage = "Fill out your last name")]
+        [Required(ErrorMessage = "Please enter your last name")]
         public string? LastName { get; set; }
 
         [Display(Name = "Canteen")]
-        [Required(ErrorMessage = "Select the canteen where you work")]
-        public CanteenEnum WorkPlace { get; set; }
+        [Required(ErrorMessage = "Please select the canteen where you work")]
+        public CanteenEnum? WorkPlace { get; set; }
 
         public IEnumerable<Canteen>? CanteenList { get; set; }
 
         [Display(Name = "Password")]
-        [Required(ErrorMessage = "Choose a password")]
+        [PasswordValidationCheck]
         public string? Password { get; set; }
+
+        [Display(Name = "Repeat password")]
+        [PasswordCheck("Password")]
+        public string? PasswordReEntry { get; set; }
     }
 }

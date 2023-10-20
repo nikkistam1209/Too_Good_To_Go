@@ -8,37 +8,40 @@ namespace Portal.Models
     {
         [Key]
         [Display(Name = "Student ID")]
-        [Required(ErrorMessage = "Fill out your student ID")]
+        [Required(ErrorMessage = "Please enter your student ID")]
         public string? StudentID { get; set; }
 
         [Display(Name = "First name")]
-        [Required(ErrorMessage = "Fill out your first name")]
+        [Required(ErrorMessage = "Please enter your first name")]
         public string? FirstName { get; set; }
 
         [Display(Name = "Last name")]
-        [Required(ErrorMessage = "Fill out your last name")]
+        [Required(ErrorMessage = "Please enter your last name")]
         public string? LastName { get; set; }
 
         [Display(Name = "Date of birth")]
-        [Required(ErrorMessage = "Fill out your date of birth")]
         [AgeCheck(16)]
-        public DateTime DOB { get; set; }
+        public DateTime? DOB { get; set; }
 
         [Display(Name = "E-mailaddress")]
-        [Required(ErrorMessage = "Fill out your e-mailaddress")]
+        [Required(ErrorMessage = "Please enter your e-mailaddress")]
         [EmailAddress]
         public string? Email { get; set; }
 
         [Display(Name = "City")]
-        [Required(ErrorMessage = "Select the city where you study")]
-        public CityEnum City { get; set; }
+        [Required(ErrorMessage = "Please select a city")]
+        public CityEnum? City { get; set; }
 
         [Display(Name = "Phonenumber")]
-        [Required(ErrorMessage = "Fill out your phone number")]
+        [Required(ErrorMessage = "Please enter your phone number")]
         public string? Phone { get; set; }
 
         [Display(Name = "Password")]
-        [Required(ErrorMessage = "Choose a password")]
+        [PasswordValidationCheck]
         public string? Password { get; set; }
+
+        [Display(Name = "Repeat password")]
+        [PasswordCheck("Password")]
+        public string? PasswordReEntry { get; set; }
     }
 }

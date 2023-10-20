@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Portal.ExtensionMethods
 {
@@ -11,29 +12,27 @@ namespace Portal.ExtensionMethods
             _minAge = minAge;
         }
 
-        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value is DateTime dateOfBirth)
+            if (value == null || !(value is DateTime dateOfBirth))
             {
-                var today = DateTime.Today;
-                var age = today.Year - dateOfBirth.Year;
-
-                if (dateOfBirth.Date > today.AddYears(-age))
-                {
-                    age--;
-                }
-
-                if (age < _minAge)
-                {
-                    return new ValidationResult(ErrorMessage);
-                }
-
-                return ValidationResult.Success;
+                return new ValidationResult("Please enter your date of birth");
             }
-            else
+
+            var today = DateTime.Today;
+            var age = today.Year - dateOfBirth.Year;
+
+            if (dateOfBirth.Date > today.AddYears(-age))
             {
-                return new ValidationResult(ErrorMessage);
+                age--;
             }
+
+            if (age < _minAge)
+            {
+                return new ValidationResult("You have to be at least 16 years old");
+            }
+
+            return ValidationResult.Success;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Core.Domain.Entities;
+using Core.Domain.Enumerations;
 using Core.DomainServices.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -102,7 +103,7 @@ namespace Portal.Controllers
                 var existingUser = await _userManager.FindByNameAsync(studentModel.StudentID);
 
                 if (existingUser != null)
-                    ModelState["StudentID"]?.Errors.Add("This ID is already in use");
+                    ModelState.AddModelError("StudentID", "This ID is already in use!");
             }
 
             if (ModelState.IsValid)
@@ -137,7 +138,8 @@ namespace Portal.Controllers
 
                 }
                 return View(studentModel);
-            }
+            }       
+
             return View(studentModel);
 
         }
@@ -186,7 +188,7 @@ namespace Portal.Controllers
                     FirstName = employeeRegisterModel.FirstName,
                     LastName = employeeRegisterModel.LastName,
                     EmployeeID = employeeRegisterModel.EmployeeID,
-                    WorkPlace = employeeRegisterModel.WorkPlace,
+                    WorkPlace = employeeRegisterModel.WorkPlace.Value,
                 };
 
                 var result = await _userManager.CreateAsync(user, employeeRegisterModel.Password);
@@ -217,7 +219,7 @@ namespace Portal.Controllers
             }
 
 
-            return RedirectToAction("Index", "Home");
+            return View(employeeRegisterModel);
         }
 
 
