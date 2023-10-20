@@ -39,7 +39,7 @@ builder.Services.AddAuthentication("CookieAuth")
         config.LoginPath = "/Account/Login";
     });
 
-
+// 
 // authorization with two roles
 builder.Services.AddAuthorization(config =>
 {
