@@ -18,12 +18,12 @@ namespace Portal.Models
         [Display(Name = "Pick Up Date")]
         public DateTime PickUpDate { get; set; }
 
-        [Required(ErrorMessage = "Please indicate the time when the package can be picked up")]
+        [Required]
         [PickUpTimeCheck]
         [Display(Name = "Pick Up Time")]
         public TimeSpan PickUpTime { get; set; }
 
-        [Required(ErrorMessage = "Please indicate until what time the package can be picked up")]
+        [Required]
         [ClosingTimeCheck]
         [Display(Name = "Closing Time")]
         public TimeSpan ClosingTime { get; set; }

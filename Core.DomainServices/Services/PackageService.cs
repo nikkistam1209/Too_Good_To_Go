@@ -28,8 +28,6 @@ namespace Core.DomainServices.Services
         {
             try
             {
-                // var validatedPackage = await ValidateCreatePackage(Package, selectedProducts, userId);
-                // validatedPackage.Canteen = await _canteenService.GetCanteenByLocation(CanteenEnum)
                 await _packageRepository.AddPackage(package);
             }
             catch

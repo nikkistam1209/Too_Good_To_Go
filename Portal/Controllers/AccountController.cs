@@ -42,32 +42,38 @@ namespace Portal.Controllers
             });
         }
 
-
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
-
             if (ModelState.IsValid)
             {
-                var user =
-                    await _userManager.FindByNameAsync(loginModel.UserId);
+                var user = await _userManager.FindByNameAsync(loginModel.UserId);
                 if (user != null)
                 {
-                    Console.WriteLine(user.ToString());
                     await _signInManager.SignOutAsync();
-                    if ((await _signInManager.PasswordSignInAsync(user,
-                        loginModel.Password, false, false)).Succeeded)
+                    var result = await _signInManager.PasswordSignInAsync(user, loginModel.Password, false, false);
+                    if (result.Succeeded)
                     {
                         return Redirect(loginModel?.ReturnUrl ?? "/Home/Index");
                     }
+                    else if (result.IsLockedOut)
+                    {
+                        ModelState.AddModelError("Password", "User is locked out, please contact support");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Password", "Password is incorrect");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("UserId", "User could not be found");
                 }
             }
-            ModelState.AddModelError("", "Invalid name or password");
             return View(loginModel);
         }
-
 
         // logout
         public async Task<RedirectResult> Logout(string returnUrl = "/")
