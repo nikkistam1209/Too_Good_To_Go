@@ -2,11 +2,11 @@
 @model PackageModel
 
 @{
-    ViewData["Title"] = "Update Package";
+    ViewData["Title"] = "Edit Package";
 }
 
 <div class="container p-3 mb-3">
-    <h3 class="dgreen-bg-color text-white text-center p-2">@ViewData["Title"]</h3>
+    <h3 class="dgreen-bg-color text-white text-center p-2 mb-3 rounded shadow">@ViewData["Title"]</h3>
 
     <form asp-action="EditPackage" asp-controller="Package" method="post">
 
@@ -114,7 +114,7 @@
 
         </div>
 
-        <button type="submit" class="btn btn-green-color px-4 me-sm-3 text-white">Update</button>
+        <button type="submit" class="btn btn-green-color px-4 me-sm-3 text-white">Edit</button>
 
     </form>
 </div>

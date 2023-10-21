@@ -12,11 +12,7 @@ namespace Portal.Models
 
         public DateTime PickUpDate { get; set; }
 
-
-        public TimeSpan PickUpTime { get; set; }
-
-
-        public TimeSpan ClosingTime { get; set; }
+        public DateTime ClosingTime { get; set; }
 
 
         public decimal Price { get; set; }
@@ -33,6 +29,10 @@ namespace Portal.Models
         public List<int> SelectedProductIds { get; set; }
 
         public CanteenEnum Canteen { get; set; }
+
+        public CityEnum City { get; set; }
+
+        public CanteenEnum MyCanteen { get; set; }
 
         public bool AgeRestriction { get; set; }
     }

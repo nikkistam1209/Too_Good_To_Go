@@ -42,26 +42,19 @@ namespace Portal.Controllers
             CanteenEnum canteen;
             var viewModel = new AllPackagesModel { };
 
-            // Create a mapping of CanteenEnum to CityEnum
+            // Getting the cities for the canteens
             var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
-
-            // Fetch the CityEnum for each CanteenEnum
             foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
             {
                 var cityEnum = _canteenService.GetCityEnum(canteenEnum);
-
-                // Handle the nullable CityEnum? here
                 if (cityEnum.HasValue)
                 {
                     canteenToCityMapping[canteenEnum] = cityEnum.Value;
                 }
-
             }
 
             if (User.HasClaim(c => c.Type == "Role" && c.Value == "Student"))
             {
-                //canteen = _studentService.GetCanteenById(this.User.Identity?.Name);
-
                 packages = _packageService.GetAvailablePackages();
 
                 viewModel = new AllPackagesModel
@@ -95,10 +88,22 @@ namespace Portal.Controllers
 
             IEnumerable<Package> packages = _packageService.GetPackages();
 
+            // Getting the cities for the canteens
+            var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
+            foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
+            {
+                var cityEnum = _canteenService.GetCityEnum(canteenEnum);
+                if (cityEnum.HasValue)
+                {
+                    canteenToCityMapping[canteenEnum] = cityEnum.Value;
+                }
+            }
+
             var viewModel = new AllPackagesModel
             {
                 Packages = packages,
-                MyCanteen = canteen
+                MyCanteen = canteen,
+                CanteenToCityMapping = canteenToCityMapping
             };
 
             return View("MyCanteen", viewModel);
@@ -110,28 +115,34 @@ namespace Portal.Controllers
         [Authorize]
         public IActionResult PackageDetails(int id)
         {
-            _logger.LogInformation("package id: " + id);
-
             var package = _packageService.GetPackageById(id);
             if (package == null)
             {
-                return NotFound(); // Handle the case where the package is not found.
+                TempData["ErrorMessage"] = "Package could not be found";
+                return RedirectToAction("AvailablePackages");
             }
+
+            var cityEnum = _canteenService.GetCityEnum(package.Canteen.Value);
 
             var model = new PackageDetailModel
             {
                 Id = package.Id,
                 Name = package.Name,
                 PickUpDate = package.PickUp,
-                PickUpTime = package.PickUp.TimeOfDay,
-                ClosingTime = package.ClosingTime.TimeOfDay,
+                ClosingTime = package.ClosingTime,
                 Price = package.Price,
                 Type = package.Type,
                 Canteen = package.Canteen.Value,
+                City = cityEnum.Value,
                 AgeRestriction = package.AgeRestriction,
                 StudentReservation = package.StudentReservation,
                 SelectedProducts = package.Products
             };
+
+            if (User.HasClaim(c => c.Type == "Role" && c.Value == "Employee"))
+            {
+                model.MyCanteen = _employeeService.GetCanteenById(this.User.Identity?.Name);
+            }
 
             return View(model);
         }
@@ -144,7 +155,24 @@ namespace Portal.Controllers
             var studentId = this.User.Identity?.Name;
             var packages = _packageService.GetAllReservationsFromStudent(studentId);
 
-            return View(packages);
+            // Getting the cities for the canteens
+            var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
+            foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
+            {
+                var cityEnum = _canteenService.GetCityEnum(canteenEnum);
+                if (cityEnum.HasValue)
+                {
+                    canteenToCityMapping[canteenEnum] = cityEnum.Value;
+                }
+            }
+
+            var viewModel = new AllPackagesModel
+            {
+                Packages = packages,
+                CanteenToCityMapping = canteenToCityMapping
+            };
+
+            return View(viewModel);
         }
 
 
@@ -161,9 +189,21 @@ namespace Portal.Controllers
                 return RedirectToAction("AvailablePackages");
             }
 
+            // Getting the cities for the canteens
+            var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
+            foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
+            {
+                var cityEnum = _canteenService.GetCityEnum(canteenEnum);
+                if (cityEnum.HasValue)
+                {
+                    canteenToCityMapping[canteenEnum] = cityEnum.Value;
+                }
+            }
+
             var viewModel = new AllPackagesModel
             {
                 Packages = _packageService.GetAvailablePackages(),
+                CanteenToCityMapping = canteenToCityMapping
             };
 
             try
