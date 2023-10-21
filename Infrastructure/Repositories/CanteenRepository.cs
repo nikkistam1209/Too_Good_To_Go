@@ -25,6 +25,17 @@ namespace Infrastructure.Repositories
             return _context.Canteens;
         }
 
+        public CityEnum? GetCityEnum(CanteenEnum canteenEnum)
+        {
+            var canteen = _context.Canteens.FirstOrDefault(c => c.Location == canteenEnum);
+
+            if (canteen != null)
+            {
+                return canteen.City;
+            }
+            return null;
+        }
+
         public Canteen GetCanteenById(int id)
         {
             return _context.Canteens.First(p => p.Id == id);

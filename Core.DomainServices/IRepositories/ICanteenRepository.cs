@@ -13,6 +13,7 @@ namespace Core.DomainServices.IRepositories
         IEnumerable<Canteen> GetAllCanteens();
 
         Canteen GetCanteenById(int id);
+        CityEnum? GetCityEnum(CanteenEnum canteenEnum);
 
         Task<Canteen?> GetCanteenByLocation(CanteenEnum location);
     }

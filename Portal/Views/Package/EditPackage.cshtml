@@ -102,9 +102,16 @@
                 </div>
             }
             <label asp-for="Type">Package Type</label>
-            <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<PackageEnum>()">
-                <option selected disabled>Selecteer</option>
+            <select asp-for="Type" class="form-control">               
+                <option value="@PackageEnum.Snack">Snack</option>
+                <option value="@PackageEnum.Lunch">Lunch</option>
+                @if (Model.MyCanteenOffersDinners)
+                {
+                    <option value="@PackageEnum.Dinner">Dinner</option>
+                }
+                <option value="@PackageEnum.Beverage">Beverage</option>
             </select>
+
         </div>
 
         <button type="submit" class="btn btn-green-color px-4 me-sm-3 text-white">Update</button>

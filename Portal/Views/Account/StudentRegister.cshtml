@@ -80,7 +80,7 @@
             }
             <label asp-for="City"></label>
             <select asp-for="City" class="form-control" asp-items="Html.GetEnumSelectList<CityEnum>()">
-                <option value="">Please select a city</option>
+                <option value="" selected disabled>Please select a city</option>
             </select>
         </div>
         <div class="form-group">

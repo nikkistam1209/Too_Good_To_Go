@@ -52,7 +52,7 @@
             }
             <label asp-for="WorkPlace"></label>
             <select asp-for="WorkPlace" class="form-control" asp-items="Html.GetEnumSelectList<CanteenEnum>()">
-                <option value="">Please select a canteen</option>
+                <option value="" selected disabled>Please select a canteen</option>
             </select>
         </div>
 

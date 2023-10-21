@@ -53,47 +53,84 @@
                             <img class="card-img-top package-image" src="https://myplate-prod.azureedge.us/sites/default/files/styles/recipe_525_x_350_/public/2020-11/SkilletPastaDinner_527x323.jpg?itok=Yb4EDdkm" alt="Package Image Dinner" />
                         }
 
-                        <div class="card-body">
+                        <div class="card-body d-flex flex-column h-100">
+
                             <!-- Type of Package -->
-                            <div class="badge dgreen-bg-color bg-gradient rounded-pill mb-2">@p.Type</div>
+                            <div style="min-content;">
+                                <div class="badge dgreen-bg-color bg-gradient rounded-pill">@p.Type</div>
+                            </div>
                             <!-- Package Name -->
                             <h5 class="card-title">@p.Name</h5>
 
                             <!-- Package Info -->
-                            <p class="card-text">Pick up date: @p.PickUp.ToString("dd-MM-yyyy")</p>
-                            <p class="card-text">Pick up time: @p.PickUp.ToString("HH:mm")</p>
-                            <p class="card-text">Pick up closing time: @p.ClosingTime.ToString("HH:mm")</p>
-                            <p class="card-text">Price: €@p.Price</p>
-                            <p class="card-text">Canteen: @p.Canteen</p>
-                            <p class="card-text">Age restriction: @p.AgeRestriction</p>
+                            <div class="row">
+                                <p class="card-text col">
+                                    <span class="icon-bg"><i class="bi bi-calendar-week-fill"></i></span> @p.PickUp.ToString("dd-MM-yyyy")
+                                </p>
+                                <p class="card-text col">
+                                    <span class="icon-bg"><i class="bi bi-clock-fill"></i></span> @p.PickUp.ToString("HH:mm")-@p.ClosingTime.ToString("HH:mm")
+                                </p>
+                            </div>
+
+                            <!-- Other details -->
+                            <div class="row">
+                                <p class="card-text col">
+                                    <span class="icon-bg"><i class="bi bi-currency-euro"></i></span> €@p.Price
+                                </p>
+                                <p class="card-text col">
+                                    <span class="icon-bg"><i class="bi bi-geo-alt-fill"></i></span> @p.Canteen
+                                    @if (Model.CanteenToCityMapping.ContainsKey(p.Canteen.Value))
+                                    {
+                                    <span class="ml-2">, @Model.CanteenToCityMapping[p.Canteen.Value]</span>
+                                    }
+
+                                </p>
+                            </div>
+
+                            
+
                             @if (role == "Employee")
                             {
                                 @if (@p.StudentReservation != null)
                                 {
-                                    <p>Reservation: @p.StudentReservation.FirstName</p>
+                                    <p class="card-text">
+                                        <span class="icon-bg"><i class="bi bi-person-circle"></i></span>
+                                        @p.StudentReservation.FirstName @p.StudentReservation.LastName (@p.StudentReservation.StudentID)
+                                    </p>
                                 }
-
+                                @if (p.AgeRestriction == true)
+                                {
+                                    <p class="card-text">
+                                        <span class="icon-bg"><i class="bi bi-exclamation-circle-fill"></i></span> Age restricted, check ID!
+                                    </p>
+                                }
                             }
 
-
                             <!-- List of Products -->
-                            <p class="card-text">Products:</p>
+                            <div class="lgreen-bg-color rounded p-3 flex-fill">
+                            <p class="card-text">Possible products:</p>
                             <ul>
                                 @foreach (Product product in p.Products)
                                 {
                                     <li>@product.Name</li>
                                 }
                             </ul>
+                            </div>
+
                         </div>
 
-                        <div class="card-footer bg-transparent border-top-0">
+                        <div class="card-footer bg-transparent border-top-0 row mb-2">
                             <!-- "Package Details" link -->
-                            <a class="btn btn-green-color text-white" asp-action="PackageDetails" asp-controller="Package" asp-route-id="@p.Id">View Details</a>
 
+                            <div class="col-6">
+                            <a class="btn btn-custom btn-green-color text-white" asp-action="PackageDetails" asp-controller="Package" asp-route-id="@p.Id">View Details</a>
+                            </div>
                             <!-- Button for Reserving -->
                             @if (role == "Student")
                             {
-                                <button class="btn btn-green-color px-4 me-sm-3 text-white" type="button" data-bs-toggle="modal" data-bs-target="#ReservePackageModal-@p.Id">Reserve Package</button>
+                                <div class="col-6">
+                                <button class="btn btn-custom btn-green-color px-4 me-sm-3 text-white" type="button" data-bs-toggle="modal" data-bs-target="#ReservePackageModal-@p.Id">Reserve Package</button>
+                                </div>
 
                                 <!-- Modal -->
                                 <div class="modal fade" id="ReservePackageModal-@p.Id" aria-hidden="true" aria-labelledby="ReservePackageModal-@p.Id" tabindex="-1">
@@ -122,10 +159,13 @@
                             @if (role == "Employee" && p.Canteen == Model.MyCanteen && p.StudentReservation == null)
                             {
                                 <!-- Edit -->
-                                <a class="btn btn-green-color text-white" asp-action="EditPackage" asp-controller="Package" asp-route-id="@p.Id">Edit Package</a>
-
+                                <div class="col-3">
+                                    <a class=" btn btn-custom dgreen-bg-color text-white" asp-action="EditPackage" asp-controller="Package" asp-route-id="@p.Id"><i class="bi bi-pencil-fill" style="margin-top: 1px;"></i></a>
+                                </div>
                                 <!-- Delete-->
-                                <button class="btn btn-green-color text-white" type="button" data-bs-toggle="modal" data-bs-target="#DeletePackageModal-@p.Id">Delete Package</button>
+                                <div class="col-3">
+                                <button class="btn btn-custom dgreen-bg-color text-white" type="button" data-bs-toggle="modal" data-bs-target="#DeletePackageModal-@p.Id"><i class="bi bi-trash-fill"></i></button>
+                                </div>
 
                                 <!-- Modal -->
                                 <div class="modal fade" id="DeletePackageModal-@p.Id" aria-hidden="true" aria-labelledby="DeletePackageModal-@p.Id" tabindex="-1">

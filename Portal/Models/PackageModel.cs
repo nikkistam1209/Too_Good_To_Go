@@ -37,6 +37,8 @@ namespace Portal.Models
 
         public Student? StudentReservation { get; set; }
 
+        public bool MyCanteenOffersDinners { get; set; }
+
         // available products
         public IEnumerable<SelectListItem>? AvailableProducts { get; set; } = new List<SelectListItem>();
 
@@ -45,11 +47,6 @@ namespace Portal.Models
         [ProductsCheck]
         [Display(Name = "Select Products")]
         public List<int> SelectedProductIds { get; set; } = new List<int>();
-
-
-        /*        [Required(ErrorMessage = "Please select at least one product")]
-                public ICollection<Product> SelectedProducts { get; set; } = new List<Product>();*/
-
 
 
     }

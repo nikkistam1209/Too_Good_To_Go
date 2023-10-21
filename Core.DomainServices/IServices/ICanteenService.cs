@@ -7,6 +7,8 @@ namespace Core.DomainServices.IServices
     {
         IEnumerable<Canteen> GetAllCanteens();
 
+        CityEnum? GetCityEnum(CanteenEnum canteenEnum);
+
         Task<Canteen?> GetCanteenByLocationAsync(CanteenEnum location);
     }
 }

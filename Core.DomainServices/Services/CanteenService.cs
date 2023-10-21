@@ -24,6 +24,11 @@ namespace Core.DomainServices.Services
             return _canteenRepository.GetAllCanteens();
         }
 
+        public CityEnum? GetCityEnum(CanteenEnum canteenEnum)
+        {
+            return _canteenRepository.GetCityEnum(canteenEnum);
+        }
+
         public async Task<Canteen?> GetCanteenByLocationAsync(CanteenEnum location)
         {
             var canteen = await _canteenRepository.GetCanteenByLocation(location);

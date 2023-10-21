@@ -12,5 +12,7 @@ namespace Portal.Models
         public string PackageError { get; set; }
 
         public bool oldEnough { get; set; }
+
+        public Dictionary<CanteenEnum, CityEnum?> CanteenToCityMapping { get; set; }
     }
 }

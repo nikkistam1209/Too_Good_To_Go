@@ -42,6 +42,22 @@ namespace Portal.Controllers
             CanteenEnum canteen;
             var viewModel = new AllPackagesModel { };
 
+            // Create a mapping of CanteenEnum to CityEnum
+            var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
+
+            // Fetch the CityEnum for each CanteenEnum
+            foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
+            {
+                var cityEnum = _canteenService.GetCityEnum(canteenEnum);
+
+                // Handle the nullable CityEnum? here
+                if (cityEnum.HasValue)
+                {
+                    canteenToCityMapping[canteenEnum] = cityEnum.Value;
+                }
+
+            }
+
             if (User.HasClaim(c => c.Type == "Role" && c.Value == "Student"))
             {
                 //canteen = _studentService.GetCanteenById(this.User.Identity?.Name);
@@ -50,7 +66,8 @@ namespace Portal.Controllers
 
                 viewModel = new AllPackagesModel
                 {
-                    Packages = packages
+                    Packages = packages,
+                    CanteenToCityMapping = canteenToCityMapping
                 };
             }
             else
@@ -62,7 +79,8 @@ namespace Portal.Controllers
                 viewModel = new AllPackagesModel
                 {
                     Packages = packages,
-                    MyCanteen = canteen
+                    MyCanteen = canteen,
+                    CanteenToCityMapping = canteenToCityMapping
                 };
 
             }
@@ -168,23 +186,47 @@ namespace Portal.Controllers
         // ----------------------------------------------------- creating a package -----------------------------------------------
 
         [Authorize(Policy = "Employee")]
-        public IActionResult CreatePackage()
+        public async Task<IActionResult> CreatePackage()
         {
-            var availableProducts = _productService.GetAllProducts();
-
-            var availableProductsList = availableProducts.Select(p => new SelectListItem
+            try
             {
-                Value = p.Id.ToString(),
-                Text = p.Name
-            }).ToList();
+                var availableProducts = _productService.GetAllProducts();
 
-            var model = new PackageModel
+                var availableProductsList = availableProducts
+                    .Select(p => new SelectListItem
+                    {
+                        Value = p.Id.ToString(),
+                        Text = p.Name
+                    })
+                    .ToList();
+
+                var canteenLocation = _employeeService.GetCanteenById(this.User.Identity?.Name);
+
+                var myCanteen = await _canteenService.GetCanteenByLocationAsync(canteenLocation);
+
+                if (myCanteen == null)
+                {
+                    TempData["ErrorMessage"] = "Your canteen could not be retrieved";
+                    return View();
+                }
+
+                var model = new PackageModel
+                {
+                    AvailableProducts = availableProductsList,
+                    PickUpDate = DateTime.Now.Date,
+                    MyCanteenOffersDinners = myCanteen.OffersDinners
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
             {
-                AvailableProducts = availableProductsList,
-                PickUpDate = DateTime.Now.Date,
-            };
-            return View(model);
+                TempData["ErrorMessage"] = ex.Message;
+                return View();
+            }
         }
+
+
 
         [HttpPost]
         [Authorize(Policy = "Employee")]
@@ -205,9 +247,7 @@ namespace Portal.Controllers
 
             try
             {
-
-                var employeeId = this.User.Identity?.Name;
-                var employee = _employeeService.GetEmployeeById(employeeId);
+                var employee = _employeeService.GetEmployeeById(this.User.Identity?.Name);
 
                 var pickUpDateTime = packageModel.PickUpDate + packageModel.PickUpTime;
                 var closingTimeDateTime = packageModel.PickUpDate + packageModel.ClosingTime;
@@ -224,7 +264,6 @@ namespace Portal.Controllers
 
                 };
 
-                //package.Products = (ICollection<Product>)_productService.GetProductsByIds(packageModel.SelectedProductIds);
 
                 var selectedProducts = _productService.GetProductsByIds(packageModel.SelectedProductIds).ToList();
 
@@ -243,6 +282,7 @@ namespace Portal.Controllers
             }
             catch (Exception ex)
             {
+                TempData["ErrorMessage"] = ex.Message;
                 return View(packageModel);
             }
 
@@ -345,6 +385,7 @@ namespace Portal.Controllers
 
             if (package == null)
             {
+                TempData["ErrorMessage"] = "The package could not be found";
                 return RedirectToAction("AvailablePackages");
             }
 
