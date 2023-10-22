@@ -5,7 +5,23 @@
 
 <div class="container p-3 mb-3">
 
-    <h3 class="dgreen-bg-color text-white text-center p-2 mb-3">@ViewData["Title"]</h3>
+    <h3 class="dgreen-bg-color text-white text-center p-2 mb-3 rounded shadow">@ViewData["Title"]</h3>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="lgreen-bg-color p-3 rounded shadow">
 
     <form asp-action="Login" asp-controller="Account" method="post">
         <input type="hidden" asp-for="ReturnUrl" value="@Model.ReturnUrl" />
@@ -32,7 +48,7 @@
             <input type="password" asp-for="Password" class="form-control" />
         </div>
 
-        <button type="submit" class="btn btn-green-color px-4 me-sm-3 text-white">Login</button>
+        <button type="submit" class="btn btn-green-color card-text px-4 me-sm-3 text-white">Login</button>
     </form>
 
 
@@ -40,5 +56,6 @@
         <a class="link" asp-action="StudentRegister" asp-asp-controller="Account"> Register as student</a> or
         <a class="link" asp-action="EmployeeRegister" asp-controller="Account">register as employee</a>
     </p>
+    </div>
 
 </div>

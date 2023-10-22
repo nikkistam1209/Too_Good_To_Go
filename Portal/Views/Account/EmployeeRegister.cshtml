@@ -6,8 +6,24 @@
     ViewData["Title"] = "Employee Registration";
 }
 
-<div class="container p-5">
-    <h3 class="dgreen-bg-color text-white text-center p-2 mb-3">@ViewData["Title"]</h3>
+<div class="container p-3 mb-3 mb-5">
+    <h3 class="dgreen-bg-color text-white text-center p-2 mb-3 rounded shadow">@ViewData["Title"]</h3>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="lgreen-bg-color p-3 pb-1 rounded shadow">
 
     <form asp-action="EmployeeRegister" asp-controller="Account" method="post">
         <div class="form-group">
@@ -78,8 +94,10 @@
             <input type="password" asp-for="PasswordReEntry" class="form-control" />
         </div>
 
-        <button type="submit" class="btn btn-green-color px-4 me-sm-3 text-white">Register</button>
+        <button type="submit" class="btn btn-green-color card-text px-4 me-sm-3 text-white">Register</button>
     </form>
 
     <p>Already have an account? Click <a class="link" asp-action="Login" asp-controller="Account">here</a> to login</p>
+
+    </div>
 </div>
