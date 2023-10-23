@@ -85,10 +85,10 @@
                                     <span class="icon-bg"><i class="bi bi-currency-euro"></i></span> €@p.Price
                                 </p>
                                 <p class="card-text col">
-                                    <span class="icon-bg"><i class="bi bi-geo-alt-fill"></i></span> @p.Canteen
+                                    <span class="icon-bg"><i class="bi bi-geo-alt-fill"></i></span> @p.Canteen,
                                     @if (Model.CanteenToCityMapping.ContainsKey(p.Canteen.Value))
                                     {
-                                    <span class="ml-2">, @Model.CanteenToCityMapping[p.Canteen.Value]</span>
+                                    <span class="ml-2">@Model.CanteenToCityMapping[p.Canteen.Value]</span>
                                     }
 
                                 </p>

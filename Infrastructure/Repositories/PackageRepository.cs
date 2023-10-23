@@ -23,6 +23,7 @@ namespace Infrastructure.Repositories
         public IEnumerable<Package> GetAvailablePackages()
         {
             return _context.Packages
+                .Where(p => p.PickUp >= DateTime.Today)
                 .Include(p => p.Products)
                 .Where(p => p.StudentReservation == null)
                 .OrderBy(p => p.PickUp)
@@ -32,6 +33,7 @@ namespace Infrastructure.Repositories
         public IEnumerable<Package> GetAllPackages()
         {
             return _context.Packages
+                .Where(p => p.PickUp >= DateTime.Today)
                 .Include(p => p.Products)
                 .Include(p => p.StudentReservation)
                 .OrderBy(p => p.PickUp)

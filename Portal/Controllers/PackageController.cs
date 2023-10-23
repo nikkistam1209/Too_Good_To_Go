@@ -33,7 +33,7 @@ namespace Portal.Controllers
             _studentService = studentService;
         }
 
-        // ------------------------------------------------ view packages ----------------------------------------------------
+        // ------------------------------------------------ viewing packages ----------------------------------------------------
 
         [Authorize]
         public IActionResult AvailablePackages()
@@ -261,7 +261,7 @@ namespace Portal.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
+                TempData["ErrorMessage"] = "An error has occurred: " + ex.Message;
                 return View();
             }
         }
@@ -314,15 +314,16 @@ namespace Portal.Controllers
                 package.Products = selectedProducts;
 
 
-
+               
                 await _packageService.AddPackage(package);
 
+                TempData["SuccessMessage"] = "Package created successfully";
                 return RedirectToAction("AvailablePackages");
 
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
+                TempData["ErrorMessage"] = "An error has occurred: " + ex.Message;
                 return View(packageModel);
             }
 
@@ -407,11 +408,12 @@ namespace Portal.Controllers
                 existingPackage.Products = selectedProducts;
 
                 await _packageService.UpdatePackage(existingPackage);
-
+                TempData["SuccessMessage"] = "Package edited successfully";
                 return RedirectToAction("AvailablePackages");
             }
             catch (Exception ex)
             {
+                TempData["ErrorMessage"] = "An error has occurred: " + ex.Message;
                 return View(packageModel);
             }
         }
@@ -438,11 +440,12 @@ namespace Portal.Controllers
                 else
                 {
                     await _packageService.DeletePackage(package);
+                    TempData["SuccessMessage"] = "Package deleted successfully";
                 }
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
+                TempData["ErrorMessage"] = "An error has occurred: " +  ex.Message;
             }
 
             return RedirectToAction("AvailablePackages");
