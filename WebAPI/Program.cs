@@ -30,7 +30,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-//
+
 // sql application database
 var connectionString = builder.Configuration.GetConnectionString("Application");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
