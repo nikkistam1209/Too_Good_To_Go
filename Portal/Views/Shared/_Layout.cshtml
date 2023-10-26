@@ -360,6 +360,24 @@
             }
         </script>
 
+        <script>
+            // Zoek het Price inputveld op basis van de asp-for attribuut
+            const priceInput = document.querySelector('input[for="Price"]');
+
+            // Voeg een eventlistener toe om het gedrag aan te passen wanneer de gebruiker het veld verlaat
+            priceInput.addEventListener('blur', function () {
+                // Haal de huidige waarde op
+                const value = priceInput.value;
+
+                // Vervang komma's door punten
+                const formattedValue = value.replace(/,/g, '.');
+
+                // Update de waarde in het inputveld
+                priceInput.value = formattedValue;
+            });
+        </script>
+
+
         @await RenderSectionAsync("Scripts", required: false)
     </body>
 </html>
