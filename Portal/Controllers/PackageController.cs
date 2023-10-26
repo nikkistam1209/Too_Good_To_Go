@@ -154,9 +154,10 @@ namespace Portal.Controllers
                     {
                         model.MyCanteen = _employeeService.GetCanteenById(this.User.Identity?.Name);
                     }
+                    return View(model);
                 }
 
-                return View(model);
+                
             }
             catch (Exception ex)
             {
