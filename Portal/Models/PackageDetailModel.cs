@@ -26,7 +26,7 @@ namespace Portal.Models
         public ICollection<Product> SelectedProducts { get; set; } = new List<Product>();
 
 
-        public List<int> SelectedProductIds { get; set; }
+        public List<int> SelectedProductIds { get; set; } = new List<int> {};
 
         public CanteenEnum Canteen { get; set; }
 

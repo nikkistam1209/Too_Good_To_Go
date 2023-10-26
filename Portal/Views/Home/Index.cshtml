@@ -15,17 +15,17 @@
                     <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
                         @if (User.Identity!.IsAuthenticated)
                         {
-                            <a class="btn btn-dark-color btn-lg px-4 me-sm-3 text-white" asp-area="" asp-controller="Package" asp-action="AvailablePackages">Get Started</a>
+                            <a class="btn btn-dark-color btn-lg px-4 me-sm-3 text-white" asp-area="" asp-controller="Package" asp-action="AvailablePackages" aria-label="Get Started and Navigate to Page with Packages">Get Started</a>
                         }
                         else
                         {
-                            <a class="btn btn-dark-color btn-lg px-4 me-sm-3 text-white" asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="/Package/AvailablePackages">Get Started</a>
+                            <a class="btn btn-dark-color btn-lg px-4 me-sm-3 text-white" asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="/Package/AvailablePackages" aria-label="Get Started and Navigate to Login Page, before navigating to Page with Packages">Get Started</a>
                         }
-                        <a class="btn btn-outline-light btn-lg px-4" href="#about-section" onclick="smoothScrollTo('about-section')">Learn More</a>
+                        <a class="btn btn-outline-light btn-lg px-4" href="#about-section" onclick="smoothScrollTo('about-section')" aria-label="Scroll to about section">Learn More</a>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5 shadow" src="https://d39l2hkdp2esp1.cloudfront.net/img/photo/247668/247668_00_2x.jpg" alt="..." /></div>
+            <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5 shadow" src="https://d39l2hkdp2esp1.cloudfront.net/img/photo/247668/247668_00_2x.jpg" alt="Picture of sharing food" /></div>
         </div>
     </div>
 </header>
@@ -34,7 +34,7 @@
     <div class="container px-5 my-5">
         <div class="row gx-5 align-items-center">
             <div class="col-lg-6">
-                <img class="img-fluid rounded mb-5 mb-lg-0 shadow" src="https://punt.avans.nl/app/uploads/2022/09/Eurest.jpg" alt="..." />
+                <img class="img-fluid rounded mb-5 mb-lg-0 shadow" src="https://punt.avans.nl/app/uploads/2022/09/Eurest.jpg" alt="Picture of people in an Avans canteen" />
             </div>
             <div class="col-lg-6">
                 <h2 class="fw-bolder">Our Commitment to Sustainability</h2>
@@ -55,7 +55,7 @@
     <div class="container px-5 my-5">
         <div class="row gx-5 align-items-center">
             <div class="col-lg-6 order-first order-lg-last">
-                <img class="img-fluid rounded mb-5 mb-lg-0" src="https://www.avans.nl/img/Logo-International-Grey.svg?v=4.4.0-021023-1837" alt="..." />
+                <img class="img-fluid rounded mb-5 mb-lg-0" src="https://www.avans.nl/img/Logo-International-Grey.svg?v=4.4.0-021023-1837" alt="Avans logo that read avans university of applied sciences" />
             </div>
             <div class="col-lg-6">
                 <h2 class="fw-bolder">About Avans</h2>

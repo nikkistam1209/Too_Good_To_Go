@@ -37,7 +37,7 @@
 
             .text-white-custom{
                 /* color: #F5F5F5; */
-                color: rgba(255, 255, 255, 0.7)
+                color: rgba(255, 255, 255, 0.7);
             }
 
 
@@ -258,62 +258,60 @@
                     </button>
                     <div class="navbar-collapse collapse ml-auto d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
-
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" aria-label="Home Page">Home</a>
                             </li>
                             <li class="nav-item ml-auto">
-                                <a class="nav-link" href="/#about-section" onclick="smoothScrollTo('about-section')">About</a>
+                                <a class="nav-link" href="/#about-section" onclick="smoothScrollTo('about-section')" aria-label="About Section">About</a>
                             </li>
                             <li class="nav-item">
                                 @if (role == "Student")
                                 {
-                                    <a class="nav-link " asp-area="" asp-controller="Package" asp-action="AvailablePackages">Available Packages</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Package" asp-action="AvailablePackages" aria-label="Available Packages">Available Packages</a>
                                 }
                                 else if (role == "Employee")
                                 {
-                                    <a class="nav-link " asp-area="" asp-controller="Package" asp-action="AvailablePackages">All Packages</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Package" asp-action="AvailablePackages" aria-label="All Packages">All Packages</a>
                                 }
                                 else
                                 {
-                                    <a class="nav-link " asp-area="" asp-controller="Package" asp-action="AvailablePackages">Packages</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Package" asp-action="AvailablePackages" aria-label="Packages">Packages</a>
                                 }
-
                             </li>
 
                             @if (role == "Student")
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link " asp-area="" asp-controller="Package" asp-action="MyReservations">My Reservations</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Package" asp-action="MyReservations" aria-label="My Reservations">My Reservations</a>
                                 </li>
                             }
 
                             @if (role == "Employee")
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link " asp-area="" asp-controller="Package" asp-action="MyCanteen">My Canteen</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Package" asp-action="MyCanteen" aria-label="My Canteen">My Canteen</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link " asp-area="" asp-controller="Package" asp-action="CreatePackage">Create Package</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Package" asp-action="CreatePackage" aria-label="Create Package">Create Package</a>
                                 </li>
                             }
                         </ul>
 
                         <ul class="navbar-nav ml-auto">
-
                             @if (User.Identity!.IsAuthenticated)
                             {
                                 <li class="nav-item">
-                                    <a class="btn btn-outline-light btn-login-custom px-4" asp-area="" asp-controller="Account" asp-action="Logout"><span class=""><i class="bi bi-person-circle"></i></span> Logout</a>
+                                    <a class="btn btn-outline-light btn-login-custom px-4" asp-area="" asp-controller="Account" asp-action="Logout" aria-label="Logout"><span class=""><i class="bi bi-person-circle"></i></span> Logout</a>
                                 </li>
                             }
                             else
                             {
                                 <li class="nav-item">
-                                    <a class="btn btn-outline-light btn-login-custom px-4" asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="/Home/Index"><span class=""><i class="bi bi-person-circle"></i></span> Login</a>
+                                    <a class="btn btn-outline-light btn-login-custom px-4" asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="/Home/Index" aria-label="Login"><span class=""><i class="bi bi-person-circle"></i></span> Login</a>
                                 </li>
                             }
                         </ul>
+
 
 
                     </div>

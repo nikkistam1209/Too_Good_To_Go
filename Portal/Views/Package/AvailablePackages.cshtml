@@ -63,8 +63,8 @@
                         <div class="card-body d-flex flex-column h-100">
 
                             <!-- Type of Package -->
-                            <div style="min-content;">
-                                <div class="badge dgreen-bg-color bg-gradient rounded-pill">@p.Type</div>
+                            <div style="min-content">
+                                <div class="badge dgreen-bg-color bg-gradient rounded-pill" aria-label="package type">@p.Type</div>
                             </div>
                             <!-- Package Name -->
                             <h5 class="card-title pb-2 pt-2">@p.Name</h5>
@@ -72,20 +72,20 @@
                             <!-- Pickup Info -->
                             <div class="row">
                                 <p class="card-text col">
-                                    <span class="icon-bg"><i class="bi bi-calendar-week-fill"></i></span> @p.PickUp.ToString("dd-MM-yyyy")
+                                    <span class="icon-bg"><i class="bi bi-calendar-week-fill" aria-label="pickup date"></i></span> @p.PickUp.ToString("dd-MM-yyyy")
                                 </p>
                                 <p class="card-text col">
-                                    <span class="icon-bg"><i class="bi bi-clock-fill"></i></span> @p.PickUp.ToString("HH:mm")-@p.ClosingTime.ToString("HH:mm")
+                                    <span class="icon-bg"><i class="bi bi-clock-fill" aria-label="pickup time"></i></span> @p.PickUp.ToString("HH:mm")-@p.ClosingTime.ToString("HH:mm")
                                 </p>
                             </div>
 
                             <!-- Price and canteen -->
                             <div class="row">
                                 <p class="card-text col">
-                                    <span class="icon-bg"><i class="bi bi-currency-euro"></i></span> €@p.Price
+                                    <span class="icon-bg"><i class="bi bi-currency-euro" aria-label="price"></i></span> €@p.Price
                                 </p>
                                 <p class="card-text col">
-                                    <span class="icon-bg"><i class="bi bi-geo-alt-fill"></i></span> @p.Canteen,
+                                    <span class="icon-bg"><i class="bi bi-geo-alt-fill" aria-label="canteen location"></i></span> @p.Canteen,
                                     @if (Model.CanteenToCityMapping.ContainsKey(p.Canteen.Value))
                                     {
                                     <span class="ml-2">@Model.CanteenToCityMapping[p.Canteen.Value]</span>

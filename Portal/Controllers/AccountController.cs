@@ -133,7 +133,6 @@ namespace Portal.Controllers
                 {
                     await _studentService.AddStudent(Student);
                     await _signInManager.PasswordSignInAsync(user, studentModel.Password, false, false);
-                    //return RedirectToAction("RegisterSuccess");
                     return RedirectToAction("Index", "Home");
 
                 }
