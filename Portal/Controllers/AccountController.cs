@@ -131,7 +131,15 @@ namespace Portal.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _studentService.AddStudent(Student);
+                    try
+                    {
+                        await _studentService.AddStudent(Student);
+                    }
+                    catch (Exception ex)
+                    {
+                        TempData["ErrorMessage"] = ex.Message;
+
+                    }
                     await _signInManager.PasswordSignInAsync(user, studentModel.Password, false, false);
                     return RedirectToAction("Index", "Home");
 
@@ -187,7 +195,7 @@ namespace Portal.Controllers
                     FirstName = employeeRegisterModel.FirstName,
                     LastName = employeeRegisterModel.LastName,
                     EmployeeID = employeeRegisterModel.EmployeeID,
-                    WorkPlace = employeeRegisterModel.WorkPlace.Value,
+                    WorkPlace = employeeRegisterModel.WorkPlace!.Value!,
                 };
 
                 var result = await _userManager.CreateAsync(user, employeeRegisterModel.Password);
@@ -204,11 +212,11 @@ namespace Portal.Controllers
                 return View(employeeRegisterModel);
             }
 
-            _logger.LogInformation("modelstate is not valid");
+/*            _logger.LogInformation("modelstate is not valid");
             foreach (var modelStateKey in ModelState.Keys)
             {
                 var modelStateVal = ModelState[modelStateKey];
-                if (modelStateVal.Errors.Count > 0)
+                if (modelStateVal!.Errors.Count > 0)
                 {
                     foreach (var error in modelStateVal.Errors)
                     {
@@ -216,7 +224,7 @@ namespace Portal.Controllers
                     }
                 }
             }
-
+*/
 
             return View(employeeRegisterModel);
         }

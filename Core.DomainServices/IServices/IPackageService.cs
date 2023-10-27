@@ -7,19 +7,16 @@ namespace Core.DomainServices.IServices
     {
         Package GetPackageById(int id);
 
-        Task AddPackage(Package package);
-        Task UpdatePackage(Package package);
-        Task DeletePackage(Package package);
+        Task AddPackage(Package package, CanteenEnum workPlace, List<Product> selectedProducts);
+        Task UpdatePackage(Package package, CanteenEnum canteenEnum, List<Product> selectedProducts);
+        Task DeletePackage(Package package, CanteenEnum canteenEnum);
 
 
         IEnumerable<Package> GetAvailablePackages();
         IEnumerable<Package> GetPackages();
 
-        /*IEnumerable<Package> GetMyCanteenPackages(CanteenEnum c);
-        IEnumerable<Package> GetOtherCanteenPackages(CanteenEnum c);*/
-
         Task ReservePackageAsync(int packageId, string userId);
 
-        IEnumerable<Package> GetAllReservationsFromStudent(string studentID);
+        IEnumerable<Package> GetAllReservationsFromStudent(Student student);
     }
 }

@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Domain", "Core.Domain\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.DomainServices", "Core.DomainServices\Core.DomainServices.csproj", "{62E62ADA-B783-4DCF-A814-2713BA5AAA79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Domain.Test", "Core.Domain.Test\Core.Domain.Test.csproj", "{C9127674-0C37-4097-8E2A-A1E06157C37E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portal.Tests", "Core.Domain.Test\Portal.Tests.csproj", "{C9127674-0C37-4097-8E2A-A1E06157C37E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.DomainServices.Test", "Core.ComainServices.Test\Core.DomainServices.Test.csproj", "{C9CF71ED-E92E-45FF-B3AF-1D8D62AE2ED8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tests", "Core.ComainServices.Test\Core.Tests.csproj", "{C9CF71ED-E92E-45FF-B3AF-1D8D62AE2ED8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "WebAPI\WebAPI.csproj", "{8036EFE8-19E3-4FD7-8D70-701B2C751700}"
 EndProject

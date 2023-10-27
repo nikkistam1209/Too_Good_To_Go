@@ -40,22 +40,6 @@ namespace Infrastructure.Repositories
                 .ToList();
         }
 
-        /*public IEnumerable<Package> GetMyCanteenPackages(CanteenEnum c)
-        {
-            return _context.Packages
-                .Include(p => p.Products)
-                .Where(package => package.Canteen == c)
-                .ToList();
-        }
-
-        public IEnumerable<Package> GetOtherCanteenPackages(CanteenEnum c)
-        {
-            return _context.Packages
-                .Include(p => p.Products)
-                .Where(package => package.Canteen != c)
-                .ToList();
-        }*/
-
         public Package GetPackageById(int id)
         {
             return _context.Packages
@@ -64,6 +48,14 @@ namespace Infrastructure.Repositories
                 .First(s => s.Id == id);
         }
 
+        public IEnumerable<Package> GetAllReservationsFromStudent(Student student)
+        {
+            return _context.Packages
+                .Where(m => m.StudentReservation == student)
+                .Where(p => p.PickUp >= DateTime.Today)
+                .Include(p => p.Products)
+                .OrderBy(m => m.PickUp);
+        }
 
         public async Task AddPackage(Package newPackage)
         {

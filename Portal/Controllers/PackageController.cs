@@ -36,89 +36,6 @@ namespace Portal.Controllers
         // ------------------------------------------------ viewing packages ----------------------------------------------------
 
         [Authorize]
-        public IActionResult AvailablePackages()
-        {
-            IEnumerable<Package> packages;
-            CanteenEnum canteen;
-            var viewModel = new AllPackagesModel { };
-
-            // Getting the cities for the canteens
-            var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
-            foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
-            {
-                var cityEnum = _canteenService.GetCityEnum(canteenEnum);
-                if (cityEnum.HasValue)
-                {
-                    canteenToCityMapping[canteenEnum] = cityEnum.Value;
-                }
-            }
-
-            if (User.HasClaim(c => c.Type == "Role" && c.Value == "Student"))
-            {
-                packages = _packageService.GetAvailablePackages();
-
-                viewModel = new AllPackagesModel
-                {
-                    Packages = packages,
-                    CanteenToCityMapping = canteenToCityMapping
-                };
-            }
-            else
-            {
-                canteen = _employeeService.GetCanteenById(this.User.Identity?.Name);
-
-                packages = _packageService.GetPackages();
-
-                viewModel = new AllPackagesModel
-                {
-                    Packages = packages,
-                    MyCanteen = canteen,
-                    CanteenToCityMapping = canteenToCityMapping
-                };
-
-            }
-
-            return View("AvailablePackages", viewModel);
-        }
-
-        [Authorize(Policy = "Employee")]
-        public IActionResult MyCanteen()
-        {
-            CanteenEnum canteen = _employeeService.GetCanteenById(this.User.Identity?.Name);
-
-            IEnumerable<Package> packages = _packageService.GetPackages();
-            Dictionary<CanteenEnum, CityEnum?> canteenToCityMapping = NewMethod();
-
-            var viewModel = new AllPackagesModel
-            {
-                Packages = packages,
-                MyCanteen = canteen,
-                CanteenToCityMapping = canteenToCityMapping
-            };
-
-            return View("MyCanteen", viewModel);
-
-            Dictionary<CanteenEnum, CityEnum?> NewMethod()
-            {
-                // Getting the cities for the canteens
-                var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
-                foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
-                {
-                    var cityEnum = _canteenService.GetCityEnum(canteenEnum);
-                    if (cityEnum.HasValue)
-                    {
-                        canteenToCityMapping[canteenEnum] = cityEnum.Value;
-                    }
-                }
-
-                return canteenToCityMapping;
-            }
-        }
-
-
-
-
-        [Authorize]
         public IActionResult PackageDetails(int id)
         {
             try
@@ -127,7 +44,6 @@ namespace Portal.Controllers
 
                 if (package != null && package.Canteen != null)
                 {
-
                     var cityEnum = _canteenService.GetCityEnum(package.Canteen.Value);
 
                     if (cityEnum == null)
@@ -152,103 +68,205 @@ namespace Portal.Controllers
 
                     if (User.HasClaim(c => c.Type == "Role" && c.Value == "Employee"))
                     {
-                        model.MyCanteen = _employeeService.GetCanteenById(this.User.Identity?.Name);
+                        model.MyCanteen = _employeeService.GetCanteenById(this.User.Identity!.Name!);
                     }
                     return View(model);
                 }
-                return View();
-
-                
+                TempData["ErrorMessage"] = "Package could not be found";
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("AvailablePackages");
+                TempData["ErrorMessage"] = ex.Message;              
             }
+            return RedirectToAction("AvailablePackages");
         }
 
-        // ------------------------------------------------------- reservations -----------------------------------------------
+
+        [Authorize]
+        public IActionResult AvailablePackages()
+        {
+            try
+            {
+                IEnumerable<Package> packages;
+                CanteenEnum canteen;
+                var viewModel = new AllPackagesModel { };
+
+                // Getting the cities for the canteens
+                var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
+                foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
+                {
+                    var cityEnum = _canteenService.GetCityEnum(canteenEnum);
+                    if (cityEnum.HasValue)
+                    {
+                        canteenToCityMapping[canteenEnum] = cityEnum.Value;
+                    }
+                }
+
+                if (User.HasClaim(c => c.Type == "Role" && c.Value == "Student"))
+                {
+                    packages = _packageService.GetAvailablePackages();
+
+                    viewModel = new AllPackagesModel
+                    {
+                        Packages = packages,
+                        CanteenToCityMapping = canteenToCityMapping
+                    };
+                }
+                else
+                {
+                    canteen = _employeeService.GetCanteenById(this.User.Identity!.Name!);
+
+                    packages = _packageService.GetPackages();
+
+                    viewModel = new AllPackagesModel
+                    {
+                        Packages = packages,
+                        MyCanteen = canteen,
+                        CanteenToCityMapping = canteenToCityMapping
+                    };
+
+                }
+                return View("AvailablePackages", viewModel);
+            }
+            catch (Exception ex)
+            {
+                ViewData["ErrorMessage"] = ex.Message;
+            }
+
+            return RedirectToAction("Home/Index");
+        }     
+
+        // ------------------------------------------------------- my canteen packages -----------------------------------------------
+
+        [Authorize(Policy = "Employee")]
+        public IActionResult MyCanteen()
+        {
+            try
+            {
+                var employeeId = this.User.Identity?.Name;
+                if (employeeId != null)
+                {
+                    CanteenEnum canteen = _employeeService.GetCanteenById(employeeId);
+
+                    IEnumerable<Package> packages = _packageService.GetPackages();
+                    Dictionary<CanteenEnum, CityEnum?> canteenToCityMapping = NewMethod();
+
+                    var viewModel = new AllPackagesModel
+                    {
+                        Packages = packages,
+                        MyCanteen = canteen,
+                        CanteenToCityMapping = canteenToCityMapping
+                    };
+
+                    return View("MyCanteen", viewModel);
+
+                    Dictionary<CanteenEnum, CityEnum?> NewMethod()
+                    {
+                        // Getting the cities for the canteens
+                        var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
+                        foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
+                        {
+                            var cityEnum = _canteenService.GetCityEnum(canteenEnum);
+                            if (cityEnum.HasValue)
+                            {
+                                canteenToCityMapping[canteenEnum] = cityEnum.Value;
+                            }
+                        }
+
+                        return canteenToCityMapping;
+                    }
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "User is not authenticated or their identity can not be found";
+                }
+            } 
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+            return RedirectToAction("AvailablePackages");
+        }
+
+        // ------------------------------------------------------- my reservations and reserving packages -----------------------------------------------
 
         [Authorize(Policy = "Student")]
         public IActionResult MyReservations()
         {
-            var studentId = this.User.Identity?.Name;
-            var packages = _packageService.GetAllReservationsFromStudent(studentId);
-
-            // Getting the cities for the canteens
-            var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
-            foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
+            try
             {
-                var cityEnum = _canteenService.GetCityEnum(canteenEnum);
-                if (cityEnum.HasValue)
+                var studentId = this.User.Identity?.Name;
+                if (studentId != null)
                 {
-                    canteenToCityMapping[canteenEnum] = cityEnum.Value;
+                    Student student = _studentService.GetStudentById(studentId);
+                    var packages = _packageService.GetAllReservationsFromStudent(student);
+
+                    // Getting the cities for the canteens
+                    var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
+                    foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
+                    {
+                        var cityEnum = _canteenService.GetCityEnum(canteenEnum);
+                        if (cityEnum.HasValue)
+                        {
+                            canteenToCityMapping[canteenEnum] = cityEnum.Value;
+                        }
+                    }
+
+                    var viewModel = new AllPackagesModel
+                    {
+                        Packages = packages,
+                        CanteenToCityMapping = canteenToCityMapping
+                    };
+                    return View(viewModel);
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "User is not authenticated or their identity can not be found";
                 }
             }
-
-            var viewModel = new AllPackagesModel
+            catch (Exception ex)
             {
-                Packages = packages,
-                CanteenToCityMapping = canteenToCityMapping
-            };
-
-            return View(viewModel);
+                TempData["ErrorMessage"] = ex.Message;
+            }
+            return RedirectToAction("AvailablePackages");
+            
         }
-
-
 
         [Authorize(Policy = "Student")]
         public async Task<IActionResult> ReservePackage(int id)
         {
-            var studentId = this.User.Identity?.Name;
-            var package = _packageService.GetPackageById(id);
+            try 
+            { 
+                var studentId = this.User.Identity?.Name;
+                if (studentId != null)
+                {
+                    var package = _packageService.GetPackageById(id);
 
-            if (package == null)
-            {
-                TempData["ErrorMessage"] = "Package could not be found";
-                return RedirectToAction("AvailablePackages");
-            }
+                    Dictionary<CanteenEnum, CityEnum?> canteenToCityMapping = CanteenCity();
 
-            Dictionary<CanteenEnum, CityEnum?> canteenToCityMapping = CanteenCity();
+                    var viewModel = new AllPackagesModel
+                    {
+                        Packages = _packageService.GetAvailablePackages(),
+                        CanteenToCityMapping = canteenToCityMapping
+                    };
 
-            var viewModel = new AllPackagesModel
-            {
-                Packages = _packageService.GetAvailablePackages(),
-                CanteenToCityMapping = canteenToCityMapping
-            };
-
-            try
-            {
-                await _packageService.ReservePackageAsync(id, studentId);
-                TempData["SuccessMessage"] = "Package reserved successfully";
-                return RedirectToAction("MyReservations");
+                    await _packageService.ReservePackageAsync(id, studentId);
+                    TempData["SuccessMessage"] = "Package reserved successfully";
+                    return RedirectToAction("MyReservations");
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "User is not authenticated or their identity can not be found";
+                }
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Reservation failed: " + ex.Message;
-                viewModel.PackageError = ex.Message;
+                TempData["ErrorMessage"] = "Reservation failed: " + ex.Message;              
             }
-
-            return View("AvailablePackages", viewModel);
-
+            return RedirectToAction("AvailablePackages");
         }
 
-        private Dictionary<CanteenEnum, CityEnum?> CanteenCity()
-        {
-            // Getting the cities for the canteens
-            var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
-            foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
-            {
-                var cityEnum = _canteenService.GetCityEnum(canteenEnum);
-                if (cityEnum.HasValue)
-                {
-                    canteenToCityMapping[canteenEnum] = cityEnum.Value;
-                }
-            }
-
-            return canteenToCityMapping;
-        }
-
+        
 
         // ----------------------------------------------------- creating a package -----------------------------------------------
 
@@ -257,8 +275,8 @@ namespace Portal.Controllers
         {
             try
             {
+                // get available products
                 var availableProducts = _productService.GetAllProducts();
-
                 var availableProductsList = availableProducts
                     .Select(p => new SelectListItem
                     {
@@ -267,21 +285,15 @@ namespace Portal.Controllers
                     })
                     .ToList();
 
+                // get employee canteen for offersdinners
                 var canteenLocation = _employeeService.GetCanteenById(this.User.Identity!.Name!);
-
                 var myCanteen = await _canteenService.GetCanteenByLocationAsync(canteenLocation);
-
-                if (myCanteen == null)
-                {
-                    TempData["ErrorMessage"] = "Your canteen could not be retrieved";
-                    return View();
-                }
 
                 var model = new PackageModel
                 {
                     AvailableProducts = availableProductsList,
                     PickUpDate = DateTime.Now.Date,
-                    MyCanteenOffersDinners = myCanteen.OffersDinners
+                    MyCanteenOffersDinners = myCanteen!.OffersDinners
                 };
 
                 return View(model);
@@ -289,11 +301,9 @@ namespace Portal.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "An error has occurred: " + ex.Message;
-                return View();
+                return RedirectToAction("AvailablePackages");
             }
         }
-
-
 
         [HttpPost]
         [Authorize(Policy = "Employee")]
@@ -311,42 +321,24 @@ namespace Portal.Controllers
 
                 return View(packageModel);
             }
-
             try
-            {
-                var employee = _employeeService.GetEmployeeById(this.User.Identity?.Name);
-
-                var pickUpDateTime = packageModel.PickUpDate + packageModel.PickUpTime;
-                var closingTimeDateTime = packageModel.PickUpDate + packageModel.ClosingTime;
-
-
+            {             
                 var package = new Package()
                 {
                     Name = packageModel.Name,
-                    Canteen = employee.WorkPlace,
-                    PickUp = pickUpDateTime,
-                    ClosingTime = closingTimeDateTime,
+                    PickUp = packageModel.PickUpDate + packageModel.PickUpTime,
+                    ClosingTime = packageModel.PickUpDate + packageModel.ClosingTime,
                     Price = packageModel.Price,
                     Type = packageModel.Type
-
                 };
 
-
+                var employee = _employeeService.GetEmployeeById(this.User.Identity!.Name!);
                 var selectedProducts = _productService.GetProductsByIds(packageModel.SelectedProductIds).ToList();
-
-                bool containsAlcohol = selectedProducts.Any(p => p.ContainsAlcohol);
-
-                package.AgeRestriction = containsAlcohol;
-
-                package.Products = selectedProducts;
-
-
-               
-                await _packageService.AddPackage(package);
+                            
+                await _packageService.AddPackage(package, employee.WorkPlace, selectedProducts);
 
                 TempData["SuccessMessage"] = "Package created successfully";
                 return RedirectToAction("AvailablePackages");
-
             }
             catch (Exception ex)
             {
@@ -359,39 +351,45 @@ namespace Portal.Controllers
         // ---------------------------------------------------- updating a package -------------------------------------------------
 
         [Authorize(Policy = "Employee")]
-        public IActionResult EditPackage(int id)
+        public async Task<IActionResult> EditPackage(int id)
         {
-            var package = _packageService.GetPackageById(id);
-
-            if (package == null)
+            try
             {
-                // Handle the case where the package with the given id does not exist
+                var package = _packageService.GetPackageById(id);
+
+                var availableProducts = _productService.GetAllProducts();
+                var availableProductsList = availableProducts.Select(p => new SelectListItem
+                {
+                    Value = p.Id.ToString(),
+                    Text = p.Name
+                }).ToList();
+
+                var selectedProductIds = package.Products.Select(p => p.Id).ToList();
+
+                // get employee canteen for offersdinners
+                var canteenLocation = _employeeService.GetCanteenById(this.User.Identity!.Name!);
+                var myCanteen = await _canteenService.GetCanteenByLocationAsync(canteenLocation);
+
+                var model = new PackageModel
+                {
+                    Id = package.Id,
+                    Name = package.Name,
+                    AvailableProducts = availableProductsList,
+                    SelectedProductIds = selectedProductIds,
+                    PickUpDate = package.PickUp.Date,
+                    PickUpTime = package.PickUp.TimeOfDay,
+                    ClosingTime = package.ClosingTime.TimeOfDay,
+                    Price = package.Price,
+                    Type = package.Type,
+                    MyCanteenOffersDinners = myCanteen!.OffersDinners
+                };
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error has occurred: " + ex.Message;
                 return RedirectToAction("AvailablePackages");
             }
-
-            var availableProducts = _productService.GetAllProducts();
-            var availableProductsList = availableProducts.Select(p => new SelectListItem
-            {
-                Value = p.Id.ToString(),
-                Text = p.Name
-            }).ToList();
-
-            var selectedProductIds = package.Products.Select(p => p.Id).ToList();
-
-            var model = new PackageModel
-            {
-                Id = package.Id,
-                Name = package.Name,
-                AvailableProducts = availableProductsList,
-                SelectedProductIds = selectedProductIds,
-                PickUpDate = package.PickUp.Date,
-                PickUpTime = package.PickUp.TimeOfDay,
-                ClosingTime = package.ClosingTime.TimeOfDay,
-                Price = package.Price,
-                Type = package.Type
-            };
-
-            return View(model);
         }
 
         [HttpPost]
@@ -400,7 +398,6 @@ namespace Portal.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Handle validation errors
                 var availableProducts = _productService.GetAllProducts();
                 packageModel.AvailableProducts = availableProducts.Select(p => new SelectListItem
                 {
@@ -409,78 +406,61 @@ namespace Portal.Controllers
                 }).ToList();
                 return View(packageModel);
             }
-
             try
             {
-                var existingPackage = _packageService.GetPackageById(packageModel.Id);
+                var updatePackage = _packageService.GetPackageById(packageModel.Id);
+                updatePackage.Name = packageModel.Name;
+                updatePackage.PickUp = packageModel.PickUpDate + packageModel.PickUpTime; ;
+                updatePackage.ClosingTime = packageModel.PickUpDate + packageModel.ClosingTime; ;
+                updatePackage.Price = packageModel.Price;
+                updatePackage.Type = packageModel.Type;
 
-                if (existingPackage == null)
-                {
-                    return RedirectToAction("AvailablePackages");
-                }
-                var pickUpDateTime = packageModel.PickUpDate + packageModel.PickUpTime;
-                var closingTimeDateTime = packageModel.PickUpDate + packageModel.ClosingTime;
-
+                var employee = _employeeService.GetEmployeeById(this.User.Identity!.Name!);
                 var selectedProducts = _productService.GetProductsByIds(packageModel.SelectedProductIds).ToList();
 
-                bool containsAlcohol = selectedProducts.Any(p => p.ContainsAlcohol);
-
-                // Update the properties of the existing package with the values from the model
-                existingPackage.Name = packageModel.Name;
-                existingPackage.PickUp = pickUpDateTime;
-                existingPackage.ClosingTime = closingTimeDateTime;
-                existingPackage.Price = packageModel.Price;
-                existingPackage.Type = packageModel.Type;
-                existingPackage.AgeRestriction = containsAlcohol;
-                existingPackage.Products = selectedProducts;
-
-                await _packageService.UpdatePackage(existingPackage);
+                await _packageService.UpdatePackage(updatePackage, employee.WorkPlace, selectedProducts);
                 TempData["SuccessMessage"] = "Package edited successfully";
-                return RedirectToAction("AvailablePackages");
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "An error has occurred: " + ex.Message;
-                return View(packageModel);
+                TempData["ErrorMessage"] = "An error has occurred: " + ex.Message;              
             }
+            return RedirectToAction("AvailablePackages");
         }
 
         // ---------------------------------------------------- deleting a package -------------------------------------------------
 
         [Authorize(Policy = "Employee")]
         public async Task<IActionResult> DeletePackage(int id)
-        {
-            var package = _packageService.GetPackageById(id);
-
-            if (package == null)
-            {
-                TempData["ErrorMessage"] = "The package could not be found";
-                return RedirectToAction("AvailablePackages");
-            }
-
+        {         
             try
             {
-                if (package.StudentReservation != null)
-                {
-                    TempData["ErrorMessage"] = "This package has a reservation and cannot be deleted";
-                }
-                else
-                {
-                    await _packageService.DeletePackage(package);
-                    TempData["SuccessMessage"] = "Package deleted successfully";
-                }
+                var canteenLocation = _employeeService.GetCanteenById(this.User.Identity!.Name!);
+                var package = _packageService.GetPackageById(id);
+                await _packageService.DeletePackage(package, canteenLocation);
+                TempData["SuccessMessage"] = "Package deleted successfully";
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "An error has occurred: " +  ex.Message;
             }
-
             return RedirectToAction("AvailablePackages");
         }
 
-
-
-
+        // -------------------------------------------- dictionary for city to canteen mapping ------------------------------------------------
+        private Dictionary<CanteenEnum, CityEnum?> CanteenCity()
+        {
+            var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
+            foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
+            {
+                var cityEnum = _canteenService.GetCityEnum(canteenEnum);
+                if (cityEnum.HasValue)
+                {
+                    canteenToCityMapping[canteenEnum] = cityEnum.Value;
+                }
+            }
+            return canteenToCityMapping;
+        }
 
     }
 }

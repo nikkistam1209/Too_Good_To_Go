@@ -13,7 +13,6 @@ namespace Core.Domain.Entities
         [Key]
         public string? StudentID { get; set; }
 
-
         public string? FirstName { get; set; }
 
         public string? LastName { get; set; }
@@ -26,8 +25,6 @@ namespace Core.Domain.Entities
         public CityEnum? City { get; set; }
 
         public string? Phone { get; set; }
-
-        //public ICollection<Package> PackageReservations { get; set; }
 
     }
 }

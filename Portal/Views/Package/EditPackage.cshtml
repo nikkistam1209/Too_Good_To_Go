@@ -8,6 +8,20 @@
 <div class="container p-3 mb-3 mb-5">
     <h3 class="dgreen-bg-color text-white text-center p-2 mb-3 rounded shadow">@ViewData["Title"]</h3>
 
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
     <div class="lgreen-bg-color p-3 rounded shadow">
     <form asp-action="EditPackage" asp-controller="Package" method="post">
 
@@ -31,7 +45,7 @@
             }
             <label asp-for="SelectedProductIds">Select Indication of Products</label>
             <div>
-                @foreach (var item in Model.AvailableProducts)
+                @foreach (var item in Model.AvailableProducts!)
                 {
                     int productValue;
                     if (int.TryParse(item.Value, out productValue))

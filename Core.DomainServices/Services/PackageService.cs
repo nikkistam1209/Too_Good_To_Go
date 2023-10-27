@@ -13,21 +13,22 @@ namespace Core.DomainServices.Services
 {
     public class PackageService : IPackageService
     {
-        private readonly ILogger<PackageService> _logger;
         private readonly IPackageRepository _packageRepository;
         private readonly IStudentService _studentService;
 
-        public PackageService(ILogger<PackageService> logger, IPackageRepository packageRepository, IStudentService studentService)
+        public PackageService(IPackageRepository packageRepository, IStudentService studentService)
         {
-            _logger = logger;
             _packageRepository = packageRepository;
             _studentService = studentService;
         }
 
-        public async Task AddPackage(Package package)
+        public async Task AddPackage(Package package, CanteenEnum employeeCanteen, List<Product> selectedProducts)
         {
             try
             {
+                package.Canteen = employeeCanteen;
+                package.Products = selectedProducts;
+                package.AgeRestriction = selectedProducts.Any(p => p.ContainsAlcohol);
                 await _packageRepository.AddPackage(package);
             }
             catch
@@ -36,27 +37,45 @@ namespace Core.DomainServices.Services
             }
         }
 
-        public async Task UpdatePackage(Package package)
+        public async Task UpdatePackage(Package package, CanteenEnum employeeCanteen, List<Product> selectedProducts)
         {
             try
             {
+                if (employeeCanteen != package.Canteen)
+                {
+                    throw new Exception("You do not have permission to update this package");
+                }
+                if (package.StudentReservation != null)
+                {
+                    throw new Exception("This package has a reservation and cannot be updated");
+                }
+                package.Products = selectedProducts;
+                package.AgeRestriction = selectedProducts.Any(p => p.ContainsAlcohol);
                 await _packageRepository.UpdatePackage(package);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error updating package: " + ex.Message);
+                throw new Exception(ex.Message);
             }
         }
 
-        public async Task DeletePackage(Package package)
+        public async Task DeletePackage(Package package, CanteenEnum employeeCanteen)
         {
             try
             {
+                if (employeeCanteen != package.Canteen)
+                {
+                    throw new Exception("You do not have permission to delete this package");
+                }
+                if (package.StudentReservation != null)
+                {
+                    throw new Exception("This package has a reservation and cannot be deleted");
+                }
                 await _packageRepository.DeletePackage(package);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error updating package: " + ex.Message);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -70,6 +89,19 @@ namespace Core.DomainServices.Services
             catch
             {
                 throw new Exception("Package could not be found");
+            }
+        }
+
+        public IEnumerable<Package> GetAllReservationsFromStudent(Student student)
+        {
+            try
+            {
+                //var student = _studentService.GetStudentById(studentID);
+                return _packageRepository.GetAllReservationsFromStudent(student);
+            }
+            catch
+            {
+                throw new Exception("Reservations could not be found");
             }
         }
 
@@ -97,73 +129,60 @@ namespace Core.DomainServices.Services
             }
         }
 
-        /*public IEnumerable<Package> GetMyCanteenPackages(CanteenEnum c)
-        {
-            try
-            {
-                return _packageRepository.GetMyCanteenPackages(c);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error getting Packages: " + ex.Message);
-            }
-        }
-
-        public IEnumerable<Package> GetOtherCanteenPackages(CanteenEnum c)
-        {
-            try
-            {
-                return _packageRepository.GetOtherCanteenPackages(c);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error getting Packages: " + ex.Message);
-            }
-        }*/
-
         public async Task ReservePackageAsync(int PackageId, string userId)
         {
             var Package = GetPackageById(PackageId);
 
-            if (Package != null && Package.StudentReservation == null)
+            if (Package != null)
             {
-                var student = _studentService.GetStudentById(userId);
-
-                if (student != null)
+                if (Package.StudentReservation == null)
                 {
-                    // Check if the Package has an age restriction
-                    if (Package.AgeRestriction)
-                    {
-                        var studentAge = CalculateStudentAge(student.DOB, Package.PickUp);
+                    var student = _studentService.GetStudentById(userId);
 
-                        if (studentAge < 18) 
+                    if (student != null && student.StudentID != null)
+                    {
+                        // Check if the Package has an age restriction
+                        if (Package.AgeRestriction)
                         {
-                            throw new Exception("You are not old enough to reserve this package");
+                            var studentAge = CalculateStudentAge(student.DOB, Package.PickUp);
+
+                            if (studentAge < 18)
+                            {
+                                throw new Exception("You are not old enough to reserve this package");
+                            }
                         }
-                    }
 
-                    // Check if the student already has a reservation on this day
-                    var reservations = GetAllReservationsFromStudent(userId);
-                    bool hasReservation = reservations.Any(r => r.PickUp == Package.PickUp);
+                        // Check if the student already has a reservation on this day
+                        var reservations = GetAllReservationsFromStudent(student);
 
-                    if (hasReservation)
-                    {
-                        throw new Exception("You already have a reservation on this day");
+                        if (reservations != null)
+                        {
+                            bool hasReservation = reservations.Any(r => r.PickUp.Date == Package.PickUp.Date);
+
+                            if (hasReservation)
+                            {
+                                throw new Exception("You already have a reservation on this day");
+                            }
+                            else
+                            {
+                                Package.StudentReservation = student;
+                                await _packageRepository.UpdatePackage(Package);
+                            }
+                        }
                     }
                     else
                     {
-                        Package.StudentReservation = student;
-                        await _packageRepository.UpdatePackage(Package);
+                        throw new Exception("Student could not be found");
                     }
                 }
                 else
                 {
-                    throw new Exception("Student could not be found");
+                    throw new Exception("Package is already reserved");
                 }
             }
             else
             {
-                throw new Exception("Package could not be found or already has a reservation");
+                throw new Exception("Package could not be found");
             }
         }
 
@@ -187,11 +206,7 @@ namespace Core.DomainServices.Services
 
 
 
-        public IEnumerable<Package> GetAllReservationsFromStudent(string studentID)
-        {
-            var student = _studentService.GetStudentById(studentID);
-            return _packageRepository.GetAllPackages().Where(m => m.StudentReservation == student).OrderBy(m => m.PickUp);
-        }
+       
 
 
     }
