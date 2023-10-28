@@ -16,7 +16,7 @@ public class PasswordValidationCheck : ValidationAttribute
         ErrorMessage = "Please choose a password";
     }
 
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         if (value is string password)
         {
@@ -25,9 +25,11 @@ public class PasswordValidationCheck : ValidationAttribute
                 return ValidationResult.Success;
             }
         }
+        string errorMessage = ErrorMessage ?? "Please choose a password";
 
-        return new ValidationResult(ErrorMessage);
+        return new ValidationResult(errorMessage);
     }
+
 
     private bool IsPasswordValid(string password)
     {

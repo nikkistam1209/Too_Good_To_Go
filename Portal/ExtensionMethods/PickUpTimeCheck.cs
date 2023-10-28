@@ -9,7 +9,7 @@ namespace Portal.ExtensionMethods
             ErrorMessage = "Please choose a reasonable pickup time";
         }
 
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
 
             if (value is TimeSpan time)

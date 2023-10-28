@@ -12,15 +12,16 @@ public class PasswordCheck : ValidationAttribute
         ErrorMessage = "Passwords do not match";
     }
 
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         var propertyInfo = validationContext.ObjectType.GetProperty(_propertyToMatch);
+        if( propertyInfo != null) {
+            var propertyValue = propertyInfo.GetValue(validationContext.ObjectInstance, null);
 
-        var propertyValue = propertyInfo.GetValue(validationContext.ObjectInstance, null);
-
-        if (object.Equals(value, propertyValue))
-        {
-            return ValidationResult.Success;
+            if (object.Equals(value, propertyValue))
+            {
+                return ValidationResult.Success;
+            }
         }
 
         return new ValidationResult(ErrorMessage);

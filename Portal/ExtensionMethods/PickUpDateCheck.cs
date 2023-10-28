@@ -9,7 +9,7 @@ namespace Portal.ExtensionMethods
             ErrorMessage = "Please fill out a date between today and two days from now";
         }
 
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
 
             if (value is DateTime date)

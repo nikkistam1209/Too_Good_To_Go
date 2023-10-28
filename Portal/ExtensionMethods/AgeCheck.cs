@@ -12,7 +12,7 @@ namespace Portal.ExtensionMethods
             _minAge = minAge;
         }
 
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             if (value == null || !(value is DateTime dateOfBirth))
             {
