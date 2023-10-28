@@ -10,8 +10,8 @@ using System.Net;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/account")]
-    [ApiController]
+    //[Route("api/account")]
+    //[ApiController]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;

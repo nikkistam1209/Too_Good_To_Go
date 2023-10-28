@@ -3,6 +3,7 @@ using Core.Domain.Enumerations;
 using Core.DomainServices.IServices;
 using Core.DomainServices.Services;
 using HotChocolate.Execution;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,22 +13,21 @@ using WebAPI.Models;
 
 namespace WebAPI.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/package")]
     [ApiController]
-    public class PackageController : Controller
+    public class PackageController : ControllerBase
     {
-        private readonly ILogger<PackageController> _logger;
         private readonly IPackageService _packageService;
 
         public PackageController(ILogger<PackageController> logger,
             IPackageService packageService)
         {
-            _logger = logger;
             _packageService = packageService;
         }
 
 
-        [Authorize]
-        [HttpPost("api/packages/reserve/{id:int}")]
+        [HttpPost("{id:int}/reserve")]
         public async Task<IActionResult> ReservePackage([FromRoute] int id)
         {
             try

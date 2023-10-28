@@ -16,6 +16,7 @@ using HotChocolate.Execution;
 
 using WebAPI.GraphQL;
 using Microsoft.OpenApi.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +72,7 @@ builder.Services.AddScoped<ICanteenService, CanteenService>();
 builder.Services.AddScoped<IPackageService, PackageService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
+//builder.Services.AddGraphQLServer().RegisterService<PackageRepository>().AddQueryType<Query>();
 
 var app = builder.Build();
 
@@ -86,7 +88,7 @@ app.MapGraphQL();
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+//app.UseAuthentication();
 app.UseAuthorization();
 
 
