@@ -11,21 +11,19 @@ namespace Portal.Controllers
 {
     public class PackageController : Controller
     {
-        private readonly ILogger<PackageController> _logger;
         private readonly IPackageService _packageService;
         private readonly IProductService _productService;
         private readonly IEmployeeService _employeeService;
         private readonly ICanteenService _canteenService;
         private readonly IStudentService _studentService;
 
-        public PackageController(ILogger<PackageController> logger,
+        public PackageController(
             IPackageService packageService,
             IProductService productService,
             IEmployeeService employeeService,
             ICanteenService canteenService,
             IStudentService studentService)
         {
-            _logger = logger;
             _packageService = packageService;
             _productService = productService;
             _employeeService = employeeService;
@@ -91,16 +89,7 @@ namespace Portal.Controllers
                 CanteenEnum canteen;
                 var viewModel = new AllPackagesModel { };
 
-                // Getting the cities for the canteens
-                var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
-                foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
-                {
-                    var cityEnum = _canteenService.GetCityEnum(canteenEnum);
-                    if (cityEnum.HasValue)
-                    {
-                        canteenToCityMapping[canteenEnum] = cityEnum.Value;
-                    }
-                }
+                Dictionary<CanteenEnum, CityEnum?> canteenToCityMapping = CanteenCity();
 
                 if (User.HasClaim(c => c.Type == "Role" && c.Value == "Student"))
                 {
@@ -149,7 +138,7 @@ namespace Portal.Controllers
                     CanteenEnum canteen = _employeeService.GetCanteenById(employeeId);
 
                     IEnumerable<Package> packages = _packageService.GetPackages();
-                    Dictionary<CanteenEnum, CityEnum?> canteenToCityMapping = NewMethod();
+                    Dictionary<CanteenEnum, CityEnum?> canteenToCityMapping = CanteenCity();
 
                     var viewModel = new AllPackagesModel
                     {
@@ -159,22 +148,6 @@ namespace Portal.Controllers
                     };
 
                     return View("MyCanteen", viewModel);
-
-                    Dictionary<CanteenEnum, CityEnum?> NewMethod()
-                    {
-                        // Getting the cities for the canteens
-                        var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
-                        foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
-                        {
-                            var cityEnum = _canteenService.GetCityEnum(canteenEnum);
-                            if (cityEnum.HasValue)
-                            {
-                                canteenToCityMapping[canteenEnum] = cityEnum.Value;
-                            }
-                        }
-
-                        return canteenToCityMapping;
-                    }
                 }
                 else
                 {
@@ -201,16 +174,7 @@ namespace Portal.Controllers
                     Student student = _studentService.GetStudentById(studentId);
                     var packages = _packageService.GetAllReservationsFromStudent(student);
 
-                    // Getting the cities for the canteens
-                    var canteenToCityMapping = new Dictionary<CanteenEnum, CityEnum?>();
-                    foreach (var canteenEnum in Enum.GetValues(typeof(CanteenEnum)).Cast<CanteenEnum>())
-                    {
-                        var cityEnum = _canteenService.GetCityEnum(canteenEnum);
-                        if (cityEnum.HasValue)
-                        {
-                            canteenToCityMapping[canteenEnum] = cityEnum.Value;
-                        }
-                    }
+                    Dictionary<CanteenEnum, CityEnum?> canteenToCityMapping = CanteenCity();
 
                     var viewModel = new AllPackagesModel
                     {

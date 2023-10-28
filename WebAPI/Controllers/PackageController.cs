@@ -26,8 +26,6 @@ namespace WebAPI.Controllers
         }
 
 
-        
-
         [Authorize]
         [HttpPost("api/packages/reserve/{id:int}")]
         public async Task<IActionResult> ReservePackage([FromRoute] int id)
@@ -35,11 +33,11 @@ namespace WebAPI.Controllers
             try
             {
                 await _packageService.ReservePackageAsync(id, this.User.Identity?.Name!);
-                return Ok("Package reserved successfully");
+                return Ok(new { StatusCode = 200, Message = "Package reserved successfully" });
             }
             catch (Exception ex)
             {
-                return BadRequest("Reservation failed: " + ex.Message);
+                return BadRequest(new { StatusCode = 400, Message= "Reservation failed: " + ex.Message });
             }
         }
 

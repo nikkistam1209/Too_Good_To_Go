@@ -29,7 +29,7 @@ namespace WebAPI.Controllers
         }
 
 
-        [HttpPost("login")]
+        [HttpPost("signin")]
         public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
         {
             if (ModelState.IsValid)
@@ -43,66 +43,26 @@ namespace WebAPI.Controllers
                     if (result.Succeeded)
                     {
                         var token = GenerateJwtToken(user);
-                        return Ok(new { Token = token });
+                        return Ok(new { StatusCode = 200, Token = token });
                     }
                     else
                     {
-                        ModelState.AddModelError("Password", "Password is incorrect");
+                        return BadRequest(new { StatusCode = 400, Message = "Password is incorrect" });
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("UserName", "User could not be found");
+                    return BadRequest(new { StatusCode = 400, Message = "User could not be found" });
                 }
             }
 
             return BadRequest(ModelState);
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel registerModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = new IdentityUser
-                {
-                    UserName = registerModel.StudentID,
-                    Email = registerModel.Email,
-                };
-
-                var result = await _userManager.CreateAsync(user, registerModel.Password);
-
-                if (result.Succeeded)
-                {
-
-                    var token = GenerateJwtToken(user);
-
-                    return Ok(new { Token = token });
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("Registration", error.Description);
-                    }
-                }
-            }
-
-            return BadRequest(ModelState);
-        }
-
-
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
-        {
-            await _signInManager.SignOutAsync();
-            return Ok("Logout successful");
-        }
-
-
+       
         private string GenerateJwtToken(IdentityUser user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["BearerTokens:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["BearerTokens:Key"]!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -115,7 +75,7 @@ namespace WebAPI.Controllers
                 issuer: _config["BearerTokens:Issuer"],
                 audience: _config["BearerTokens:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(int.Parse(_config["BearerTokens:ExpiryMinutes"])),
+                expires: DateTime.Now.AddMinutes(int.Parse(_config["BearerTokens:ExpiryMinutes"]!)),
                 signingCredentials: credentials
             );
 

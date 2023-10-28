@@ -96,7 +96,6 @@ namespace Core.DomainServices.Services
         {
             try
             {
-                //var student = _studentService.GetStudentById(studentID);
                 return _packageRepository.GetAllReservationsFromStudent(student);
             }
             catch

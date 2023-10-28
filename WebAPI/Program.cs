@@ -25,7 +25,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Your API Name",
+        Title = "TooGoodToGo",
         Version = "v1"
     });
 });
@@ -54,16 +54,9 @@ builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.Authenticati
 });
 
 
-
-
 builder.Services.AddGraphQLServer()
     .AddQueryType<GetPackagesQuery>()
     .AddType<PackageType>();
-
-
-
-
-
 
 
 builder.Services.AddScoped<ICanteenRepository, CanteenRepository>();
@@ -79,14 +72,12 @@ builder.Services.AddScoped<IPackageService, PackageService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
 
-
-
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API Name V1");
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "TooGoodToGo API");
 });
 
 

@@ -9,11 +9,11 @@ namespace Portal.ExtensionMethods
             ErrorMessage = "Please select at least one product";
         }
 
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
         {
             if (value is List<int> selectedProductIds && selectedProductIds.Any())
             {
-                return ValidationResult.Success;
+                return ValidationResult.Success!;
             }
 
             return new ValidationResult(ErrorMessage);
