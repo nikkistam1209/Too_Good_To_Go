@@ -26,7 +26,7 @@
         </div>
     }
 
-    @if (Model.Packages.Count() > 0)
+    @if (Model.Packages != null && Model.Packages.Count() > 0)
     {
 
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">

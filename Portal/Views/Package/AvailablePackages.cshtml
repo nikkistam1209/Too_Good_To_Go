@@ -34,7 +34,7 @@
         </div>
     }
 
-    @if (Model.Packages.Count() > 0)
+    @if (Model.Packages != null && Model.Packages.Count() > 0)
     {
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
@@ -86,7 +86,7 @@
                                 </p>
                                 <p class="card-text col">
                                     <span class="icon-bg"><i class="bi bi-geo-alt-fill" aria-label="canteen location"></i></span> @p.Canteen,
-                                    @if (Model.CanteenToCityMapping.ContainsKey(p.Canteen.Value))
+                                    @if (Model.CanteenToCityMapping != null && Model.CanteenToCityMapping.ContainsKey(p.Canteen!.Value))
                                     {
                                     <span class="ml-2">@Model.CanteenToCityMapping[p.Canteen.Value]</span>
                                     }

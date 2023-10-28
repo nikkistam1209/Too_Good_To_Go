@@ -27,7 +27,7 @@
         </div>
     }
 
-    @if (Model.Packages.Where(p => p.Canteen == Model.MyCanteen).Count() > 0)
+    @if (Model.Packages != null && Model.Packages.Where(p => p.Canteen == Model.MyCanteen).Count() > 0)
     {
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
