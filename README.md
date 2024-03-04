@@ -26,10 +26,3 @@
 
 <h2>Deployment</h2>
 <p>Continuous deployment is implemented through a development pipeline that automatically starts builds, executes unit tests, and deploys updates.</p>
-
-<h2>UX Design</h2>
-<p>The user interface design follows the principles of UX design, focusing on user-friendliness and a consistent user experience.</p>
-
-![image](https://github.com/nikkistam1209/Too_Good_To_Go/assets/117906660/2bf49ce2-032a-4138-9a30-7adc560849d5)
-
-
