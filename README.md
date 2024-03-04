@@ -9,13 +9,6 @@
   <li><strong>Canteen Staff:</strong> Canteen staff can view available packages and add, edit, or delete new packages.</li>
 </ul>
 
-<h2>Key User Stories</h2>
-<ul>
-  <li>As a student, I want to see which packages are available and which ones I have reserved.</li>
-  <li>As canteen staff, I want to view available packages and add new ones.</li>
-  <li>As a student, I want to filter packages by location and meal type for a personalized overview.</li>
-</ul>
-
 <h2>Technologies</h2>
 <ul>
   <li><strong>ASP.NET MVC Core 6:</strong> For developing the web application.</li>
@@ -26,10 +19,10 @@
 </ul>
 
 <h2>Architecture</h2>
-<p>The project follows the clean (onion) architecture, with the application core at its center and clear separation of layers. Dependency injection is applied to manage dependencies.</p>
+<p>The project follows the clean (onion) architecture, with the application core at its center and a clear separation of layers. Dependency injection is applied to manage dependencies.</p>
 
 <h2>Testing</h2>
-<p>Unit tests are implemented for the business rules of the domain, using mocking to ensure test independence. The RESTful Web API is tested using Postman and Swagger.</p>
+<p>Unit tests are implemented for the business rules of the domain, using mocking to ensure test independence. The RESTful Web API is tested using Postman.</p>
 
 <h2>Deployment</h2>
 <p>Continuous deployment is implemented through a development pipeline that automatically starts builds, executes unit tests, and deploys updates.</p>
@@ -37,5 +30,6 @@
 <h2>UX Design</h2>
 <p>The user interface design follows the principles of UX design, focusing on user-friendliness and a consistent user experience.</p>
 
-<h2>Notes</h2>
-<p>This project is developed as part of an assignment for the Software Design & Architecture 2 course, with a focus on scalability, maintainability, and testability of the application.</p>
+![image](https://github.com/nikkistam1209/Too_Good_To_Go/assets/117906660/2bf49ce2-032a-4138-9a30-7adc560849d5)
+
+
